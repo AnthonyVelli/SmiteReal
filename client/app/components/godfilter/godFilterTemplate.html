@@ -1,0 +1,30 @@
+<div layout='column'>
+	<md-divider ></md-divider>
+	<md-subheader class="md-no-sticky">FILTER</md-subheader>
+	<section layout='row' layout-align='center center' layout-wrap>
+		<md-button ng-class="{'actv-fltr': search.filter==='Mage'}" class='fltr-btn' ng-click='search.filter = "Mage"'>MAG</md-button>	
+		<md-button ng-class="{'actv-fltr': search.filter==='Hunter'}" class='fltr-btn' ng-click='search.filter = "Hunter"'>HUN</md-button>	
+		<md-button ng-class="{'actv-fltr': search.filter==='Warrior'}" class='fltr-btn' ng-click='search.filter = "Warrior"'>WAR</md-button>	
+		<md-button ng-class="{'actv-fltr': search.filter==='Assassin'}" class='fltr-btn' ng-click='search.filter = "Assassin"'>ASS</md-button>	
+		<md-button ng-class="{'actv-fltr': search.filter==='Guardian'}" class='fltr-btn' ng-click='search.filter = "Guardian"'>GUA</md-button>	
+	</section>
+	<input ng-model="search.text" placeholder='Name of God'></label>
+	<section layout='row' layout-align='center center'>
+		<md-button class='fltr-btn' ng-click='clearFilter()'>Clear Filter</md-button>	
+	</section>
+	<md-divider ></md-divider>
+	<md-subheader class="md-no-sticky">SORT</md-subheader>
+	<section layout='row' layout-align='center center' layout-wrap ng-click='sort($event)'>
+		<md-button ng-class="{'actv-fltr': search.order==='damage'}" data-stat='damage' class='fltr-btn'>ATK</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='attack_Sec'}" data-stat='attack_Sec' class='fltr-btn'>ATK/s</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='speed'}" data-stat='speed' class='fltr-btn'>SPD</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='health'}" data-stat='health' class='fltr-btn'>HP</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='mana'}" data-stat='mana' class='fltr-btn'>MP</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='physical'}" data-stat='physical' class='fltr-btn'>PHYS</md-button>	
+		<md-button ng-class="{'actv-fltr': search.order==='magical'}" data-stat='magical' class='fltr-btn'>MAG</md-button>	
+	</section>
+	<section layout='row' layout-align='center center'>
+		<md-button class='fltr-btn' ng-click='search.order = ""'>Clear Sort</md-button>	
+	</section>
+	<md-divider ></md-divider>
+</div>

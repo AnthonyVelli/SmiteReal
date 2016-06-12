@@ -1,0 +1,10 @@
+<md-sidenav class="md-sidenav-{{$ctrl.side}}" md-is-open='$ctrl.chosenGods.length===0' md-component-id={{$ctrl.side}}>
+	
+	<god-filter search='$ctrl.search'></god-filter>
+	
+	<god-list godlist="$ctrl.godlist" search='$ctrl.search' chosen="$ctrl.chosenGods" side="$ctrl.side" add-god="$ctrl.addGod" class='{{$ctrl.side}}-text'></god-list>
+	
+</md-sidenav>
+<chosen chosen="$ctrl.chosenGods" layout='row' items='$ctrl.items'></chosen>
+
+

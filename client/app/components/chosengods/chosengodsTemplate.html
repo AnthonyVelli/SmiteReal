@@ -1,0 +1,68 @@
+<div ng-repeat='god in chosen' ng-click="removeGod($event, $index)" flex layout='row'">
+	<md-card  class='god-card' md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch>
+		<md-card-title>
+			<md-card-title-text>
+				<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' width='361'></canvas>
+				<span class="md-headline">{{god.name}}</span>
+				<span class="md-subhead">{{god.class}}</span>
+				<span class="md-subhead">{{god.type}}</span>
+			</md-card-title-text>
+		</md-card-title>
+		<md-card-content layout="row" layout-align="space-between">
+			<img src={{god.smallimg}} class="md-media-xl card-media"></img>
+			<md-card-actions>
+				<div class='table-responsive'>
+					<table class='table'>
+						<tbody>
+							<tr>
+								<th>DMG</th>
+								<th>{{god.damage}}</th>
+							</tr>
+							<tr>
+								<th>ATK/S</th>
+								<th>{{god.attack_msec}}</th>
+							</tr>
+							<tr>
+								<th>SPD</th>
+								<th>{{god.speed}}</th>
+							</tr>
+							<tr>
+								<th>HP</th>
+								<th>{{god.health}}</th>
+							</tr>
+							<tr>
+								<th>MP</th>
+								<th>{{god.mana}}</th>
+							</tr>
+							<tr>
+								<th>PHY</th>
+								<th>{{god.physical}}</th>
+							</tr>
+							<tr>
+								<th>MAG</th>
+								<th>{{god.magical}}</th>
+							</tr>
+							<tr>
+								<th>RNG</th>
+								<th>{{god.range}}</th>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</md-card-actions>
+			<md-list>
+				<md-list-item ng-click='deEquip(item)' ng-repeat='item in god.equipment'>
+					<img ng-src={{item.image}} class='md-avatar'/>
+					<h3>{{item.name}}</h3>
+				</md-list-item>
+			</md-list>
+		</md-card-content>
+	</md-card>
+	<md-content class='god-card' flex>
+		<md-list-item class='md-3-line' ng-repeat='item in items' ng-click='god.Equip(item); $event.stopPropagation();'>
+			<img ng-src={{item.image}} class='md-avatar'/>
+			<h3>{{item.name}}</h3>
+			<!-- <h4 ng-repeat='pro in item.pros'>{{pro}}</h4> -->
+		</md-list-item>
+	</md-content>
+</div>

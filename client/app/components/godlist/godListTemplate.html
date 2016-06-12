@@ -1,0 +1,44 @@
+<md-list flex>
+ 	<md-card ng-repeat="god in godlist | filter: {name: search.text, godbase: {class: search.filter}} | orderBy: search.order:search.reverse" ng-click="addGod(god)", ng-class='side' md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{god.godbase.name}}</span>
+            <span class="md-subhead">{{god.godbase.class}}</span>
+            <span class="md-subhead">{{god.godbase.type}}</span>
+          </md-card-title-text>
+          <md-card-title-media>
+            <img src={{god.godbase.smallimg}} class="md-media-sm card-media"></img>
+          </md-card-title-media>
+        </md-card-title>
+        <md-card-actions layout="row" layout-align="start center">
+        <div class='table-responsive'>
+        	<table class='table'>
+        		<thead>
+        			<tr>
+        				<th>DMG</th>
+        				<th>ATK/S</th>
+        				<th>SPD</th>
+        				<th>HP</th>
+        				<th>MP</th>
+        				<th>PHY</th>
+        				<th>MAG</th>
+        				<th>RNG</th>
+    				</tr>
+				</thead>
+				<tbody>
+        			<tr>
+        				<th>{{god.damage}}</th>
+        				<th>{{god.attack_msec}}</th>
+        				<th>{{god.speed}}</th>
+        				<th>{{god.health}}</th>
+        				<th>{{god.mana}}</th>
+        				<th>{{god.physical}}</th>
+        				<th>{{god.magical}}</th>
+        				<th>{{god.range}}</th>
+    				</tr>
+				</tbody>
+			</table>
+		</div>
+        </md-card-actions>
+      </md-card>
+</md-list>

@@ -1,0 +1,7 @@
+<div class='fight-btn' layout=row layout-align='center center' ng-show='chosenGodsLeft.length > 0 && chosenGodsRight.length > 0'>
+		<md-button ng-click='startFight()'>FIGHT!</md-button>
+</div>
+<section layout="row" flex>
+	<side flex='50' layout='row' gods="gods" chosen-gods="chosenGodsLeft" side="left"></side>
+	<side flex='50' layout='row' gods="gods" chosen-gods="chosenGodsRight" side="right"></side>
+</section>
