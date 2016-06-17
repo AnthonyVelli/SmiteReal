@@ -1,32 +1,44 @@
 'use strict';
 angular.module('smiteApp')
 .factory('FightFact', function($interval){
+	function roundToDecimal (val, places) {
+		return +(Math.round(val + 'e+' + places)  + 'e-' + places);
+	}
+	function compoundGrowth (base, inc, times){
+		inc+=1;
+		for (var x = 1; x < times; x++){
+			base *= inc;
+		}
+		return roundToDecimal(base, 3);
+	}
+
 	class God {
 		constructor(god, level){
-			this.godbase = god;
 			this.level = level;
 			this.name = god.name;
 			this.health = god.health + (level * god.health_Growth_Rate);
 			this.mana = god.mana + (level * god.mana_Growth_Rate);
 			this.physical = god.physical + (level * god.physical_Growth_Rate);
-			this.magical = this.Round((god.magical + (level * god.magical_Growth_Rate)), 2);
-			this.hp5 = this.CompoundGrowth(god.hp5, god.hp5_Growth_Rate, level);
-			this.mp5 = + this.CompoundGrowth(god.mp5, god.mp5_Growth_Rate, level);
-			this.range = this.Round((god.range + (level * god.range_Growth_Rate)), 2);
-			this.speed = this.Round((god.speed + (level * god.speed_Growth_Rate)), 2);
-			this.damage = this.Round((god.damage + (level * god.damage_Growth_Rate) + (god.damage_Growth_Rate_Inc * (god.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical))), 2);
-			this.attack_msec = this.CompoundGrowth(god.attack_Sec, god.attack_Sec_Growth_Rate, level) * 1000;
+			this.magical = roundToDecimal((god.magical + (level * god.magical_Growth_Rate)), 2);
+			this.hp5 = roundToDecimal((god.hp5 + (god.hp5_Growth_Rate * level)), 2);
+			this.mp5 = roundToDecimal((god.mp5 + (god.mp5_Growth_Rate * level)), 2);
+			this.range = roundToDecimal((god.range + (level * god.range_Growth_Rate)), 2);
+			this.speed = roundToDecimal((god.speed + (level * god.speed_Growth_Rate)), 2);
+			this.baseDamage = roundToDecimal((god.damage + (level * god.damage_Growth_Rate)), 2);
+			this.damage_Growth_Rate_Inc = god.damage_Growth_Rate_Inc;
+			this.damage_Growth_Rate_Type = god.damage_Growth_Rate_Type;
+			this.damage = this.ReturnDamage();
+			this.attack_msec = compoundGrowth(god.attack_Sec, god.attack_Sec_Growth_Rate, level) * 1000;
+			this.class = god.class;
+			this.smallimg = god.smallimg;
+			this.type = god.type;
 		}
 
-		Round(val, places) {
-			 return +(Math.round(val + 'e+' + places)  + 'e-' + places);
+		ReturnDamage(){
+			return roundToDecimal(this.baseDamage + (this.damage_Growth_Rate_Inc * (this.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical)), 2);
 		}
-		CompoundGrowth(base, inc, times){
-			inc+=1;
-			for (var x = 1; x < times; x++){
-				base *= inc;
-			}
-			return this.Round(base, 3);
+		SetDamage(){
+			this.damage = this.ReturnDamage();
 		}
 	}
 
@@ -57,14 +69,13 @@ angular.module('smiteApp')
 	}
 
 	var events = new EventEmitter();
-
 	class FightingGod {
 		constructor(god, side){
 			this.events = events;
 			this.name = god.name;
-			this.class = god.godbase.class;
-			this.smallimg = god.godbase.smallimg;
-			this.type = god.godbase.type;
+			this.class = god.class;
+			this.smallimg = god.smallimg;
+			this.type = god.type;
 			this.health = god.health;
 			this.mana = god.mana;
 			this.physical = god.physical;
@@ -74,16 +85,68 @@ angular.module('smiteApp')
 			this.range = god.range;
 			this.speed = god.speed;
 			this.damage = god.damage;
+			this.baseDamage = god.baseDamage;
+			this.damage_Growth_Rate_Inc = god.damage_Growth_Rate_Inc;
+			this.damage_Growth_Rate_Type = god.damage_Growth_Rate_Type;
 			this.attack_msec = god.attack_msec;
 			this.side = side;
 			this.health = god.health;
 			this.healthremaining = god.health;
+			this.cooldownreduction = 0;
+			this.criticalstrikechance = 0;
+			this.crowdcontrolreduction = 0;
+			this.magicallifesteal = 0;
+			this.magicalpenetration = 0;
+			this.magicalprotection = 0;
+			this.physicallifesteal = 0;
+			this.physicalpenetration = 0;
+			this.physicalprotection = 0;
 			this.equipment = [{name: 'item slot 1'}, {name: 'item slot 2'}, {name: 'item slot 3'}, {name: 'item slot 4'}, {name: 'item slot 5'}];
 		}
+		DeEquip(index) {
+			var item = this.equipment[index];
+			for (var stat in item.properties) {
+				this.StatDecrease(stat, item.properties[stat]);
+			}
+			this.SetDamage();
+			this.equipment[index] = {name: 'item slot '+(index+1)};
+		}
 		Equip(item) {
+			console.log(this);
 			let equipSlot = this.equipment.findIndex(slot => /item slot [0-9]/.test(slot.name));
+			if (equipSlot+1) {
+				for (var stat in item.properties) {
+					this.StatIncrease(stat, item.properties[stat]);
+				}
+			}
+			this.SetDamage();
 			this.equipment[equipSlot] = item;
 		}
+
+		StatIncrease(stat, measure){
+			console.log(this[stat]+'+'+measure);
+			if (stat === 'attack_msec') {
+				this.attack_msec = Math.round(this.attack_msec / measure, 2);
+			} else if (measure % 1) {
+				this[stat] = roundToDecimal(this[stat] * measure, 2);
+			} else {
+				this[stat] += measure;
+			}
+			console.log(this[stat]);
+		}
+
+		StatDecrease(stat, measure){
+			console.log(this[stat]+'-'+measure);
+			if (stat === 'attack_msec') {
+				this.attack_msec = Math.round(this.attack_msec * measure, 2);
+			} else if (measure % 1) {
+				this[stat] = roundToDecimal(this[stat] / measure, 2);
+			} else {
+				this[stat] -= measure;
+			}
+			console.log(this[stat]);
+		}
+
 		PercentHealthRemaining(){
 			var percentRemaining = Math.round((this.healthremaining/this.health) * 100);
 			return percentRemaining+'%';
@@ -111,6 +174,10 @@ angular.module('smiteApp')
 		StartDefense(){
 			let takeDamage = this.TakeDamage.bind(this);
 			this.events.On('attack'+this.side, takeDamage);
+		}
+		
+		SetDamage(){
+			this.damage = roundToDecimal(this.baseDamage + (this.damage_Growth_Rate_Inc * (this.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical)), 2);
 		}
 	}
 

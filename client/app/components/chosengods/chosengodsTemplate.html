@@ -51,7 +51,7 @@
 				</div>
 			</md-card-actions>
 			<md-list>
-				<md-list-item ng-click='deEquip(item)' ng-repeat='item in god.equipment'>
+				<md-list-item ng-click='god.DeEquip($index); $event.stopPropagation();'' ng-repeat='item in god.equipment'>
 					<img ng-src={{item.image}} class='md-avatar'/>
 					<h3>{{item.name}}</h3>
 				</md-list-item>
@@ -59,10 +59,12 @@
 		</md-card-content>
 	</md-card>
 	<md-content class='god-card' flex>
-		<md-list-item class='md-3-line' ng-repeat='item in items' ng-click='god.Equip(item); $event.stopPropagation();'>
-			<img ng-src={{item.image}} class='md-avatar'/>
-			<h3>{{item.name}}</h3>
-			<!-- <h4 ng-repeat='pro in item.pros'>{{pro}}</h4> -->
-		</md-list-item>
+			<md-list-item class='md-3-line' ng-repeat='item in items' ng-click='god.Equip(item); $event.stopPropagation();'>
+				<img ng-src={{item.image}} class='md-avatar'/>
+				<div class='md-list-item-text' layout='column'>
+					<h3>{{item.name}}</h3>
+					<h4 ng-repeat='pro in item.pros'>{{pro}}</h4>
+				</div>
+			</md-list-item>
 	</md-content>
 </div>

@@ -1,5 +1,5 @@
 'use strict';
-
+const stats = ['attack_msec', 'cooldownreduction', 'criticalstrikechance', 'crowdcontrolreduction', 'health', 'hp5', 'magicallifesteal', 'magicalpenetration', 'magical', 'magicalprotection', 'mana', 'speed', 'mp5', 'physicallifesteal', 'physicalpenetration', 'physical', 'physicalprotection'];
 export default function(sequelize, DataTypes) {
   return sequelize.define('Item', {
     _id: {
@@ -11,7 +11,7 @@ export default function(sequelize, DataTypes) {
     name: DataTypes.STRING,
     image: DataTypes.STRING,
     class: DataTypes.STRING,
-    pros: DataTypes.STRING,
+    pros: {type: DataTypes.STRING, get: function() {return this.getDataValue('pros').split(',').map(prop => prop.trim())}},
     cost: DataTypes.INTEGER,
     description: DataTypes.STRING,
     startsFrom: DataTypes.STRING,
@@ -32,5 +32,11 @@ export default function(sequelize, DataTypes) {
 	physicalpenetration: DataTypes.FLOAT,
 	physical: DataTypes.FLOAT,
 	physicalprotection: DataTypes.FLOAT
-  });
+  }, {getterMethods: {
+  	properties: function() {
+  		let props = {};
+  		stats.forEach(stat => this[stat] && (props[stat] = this[stat]));
+  		return props;
+  	}
+  }});
 }
