@@ -61,7 +61,7 @@ function handleError(res, statusCode) {
 }
 // Gets a list of Gods
 export function index(req, res) {
-  return God.findAll({attributes: ['name', 'type', 'class', 'pros', 'health', 'health_Growth_Rate', 'mana', 'mana_Growth_Rate', 'speed', 'speed_Growth_Rate', 'range', 'range_Growth_Rate', 'attack_Sec', 'attack_Sec_Growth_Rate', 'damage', 'damage_Growth_Rate', 'damage_Growth_Rate_2', 'progression', 'physical', 'physical_Growth_Rate', 'magical', 'magical_Growth_Rate', 'hp5', 'hp5_Growth_Rate', 'mp5', 'mp5_Growth_Rate', 'smallimg']})
+  return God.findAll({attributes: ['name', 'type', 'class', 'pros', 'health', 'health_Growth_Rate', 'mana', 'mana_Growth_Rate', 'speed', 'speed_Growth_Rate', 'range', 'range_Growth_Rate', 'attack_Sec', 'attack_Sec_Growth_Rate', 'damage', 'damage_Growth_Rate', 'damage_Growth_Rate_2', 'progression', 'physical', 'physical_Growth_Rate', 'magical', 'magical_Growth_Rate', 'hp5', 'hp5_Growth_Rate', 'mp5', 'mp5_Growth_Rate', 'smallimg', 'magicalprotection_Growth_Rate', 'physicalprotection_Growth_Rate', 'physicalprotection' ,'magicalprotection']})
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

@@ -43,6 +43,10 @@ module.exports = function(sequelize, DataTypes) {
 		hp5_Growth_Rate: DataTypes.FLOAT,
 		mp5: DataTypes.FLOAT,
 		mp5_Growth_Rate: DataTypes.FLOAT,
+		magicalprotection: DataTypes.FLOAT,
+		physicalprotection: DataTypes.FLOAT,
+		magicalprotection_Growth_Rate: DataTypes.FLOAT,
+		physicalprotection_Growth_Rate: DataTypes.FLOAT,
 		smallimg: DataTypes.STRING,
 	}, {
 		getterMethods: {

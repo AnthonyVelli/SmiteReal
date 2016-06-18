@@ -24,6 +24,8 @@ angular.module('smiteApp')
 			this.mp5 = roundToDecimal((god.mp5 + (god.mp5_Growth_Rate * level)), 2);
 			this.range = roundToDecimal((god.range + (level * god.range_Growth_Rate)), 2);
 			this.speed = roundToDecimal((god.speed + (level * god.speed_Growth_Rate)), 2);
+			this.physicalprotection = roundToDecimal((god.physicalprotection + (god.physicalprotection_Growth_Rate * level)), 2);
+			this.magicalprotection = roundToDecimal((god.magicalprotection + (god.magicalprotection_Growth_Rate * level)), 2);
 			this.baseDamage = roundToDecimal((god.damage + (level * god.damage_Growth_Rate)), 2);
 			this.damage_Growth_Rate_Inc = god.damage_Growth_Rate_Inc;
 			this.damage_Growth_Rate_Type = god.damage_Growth_Rate_Type;
@@ -69,6 +71,14 @@ angular.module('smiteApp')
 	}
 
 	var events = new EventEmitter();
+
+	class Ability {
+		constructor(ability){
+			this.name = ability.name;
+
+		}
+	}
+
 	class FightingGod {
 		constructor(god, side){
 			this.events = events;
@@ -95,25 +105,39 @@ angular.module('smiteApp')
 			this.cooldownreduction = 0;
 			this.criticalstrikechance = 0;
 			this.crowdcontrolreduction = 0;
+			this.abilities = this.SetAbility(god);
+			this.magicalprotection = god.magicalprotection;
+			this.physicalprotection = god.physicalprotection;
 			this.magicallifesteal = 0;
-			this.magicalpenetration = 0;
-			this.magicalprotection = 0;
 			this.physicallifesteal = 0;
+			this.magicalpenetration = 0;
+			this.magicalpenetrationPercent = 0;
+			this.magicalreduction = 0;
+			this.magicalreductionPercent = 0;
 			this.physicalpenetration = 0;
-			this.physicalprotection = 0;
-			this.equipment = [{name: 'item slot 1'}, {name: 'item slot 2'}, {name: 'item slot 3'}, {name: 'item slot 4'}, {name: 'item slot 5'}];
+			this.physicalpenetrationPercent = 0;
+			this.physicalreduction = 0;
+			this.physicalreductionPercent = 0;
+			this.equipment = [{name: 'equip 1'}, {name: 'equip 2'}, {name: 'equip 3'}, {name: 'equip 4'}, {name: 'equip 5'}];
 		}
+
+		SetAbility(ability){
+			let abilityObj = {};
+			abilityObj[ability.name] = new Ability(ability);
+			return abilityObj;
+		}
+
 		DeEquip(index) {
 			var item = this.equipment[index];
 			for (var stat in item.properties) {
 				this.StatDecrease(stat, item.properties[stat]);
 			}
 			this.SetDamage();
-			this.equipment[index] = {name: 'item slot '+(index+1)};
+			this.equipment[index] = {name: 'equip '+(index+1)};
 		}
 		Equip(item) {
 			console.log(this);
-			let equipSlot = this.equipment.findIndex(slot => /item slot [0-9]/.test(slot.name));
+			let equipSlot = this.equipment.findIndex(slot => /equip [0-9]/.test(slot.name));
 			if (equipSlot+1) {
 				for (var stat in item.properties) {
 					this.StatIncrease(stat, item.properties[stat]);
@@ -151,9 +175,10 @@ angular.module('smiteApp')
 			var percentRemaining = Math.round((this.healthremaining/this.health) * 100);
 			return percentRemaining+'%';
 		}
-		TakeDamage(dmg){
-			this.healthremaining -= dmg;
-			let pixelsLost = Math.round((dmg/this.health) * 361);
+		TakeDamage(attack){
+			let attackReceived = attack(this);
+			this.healthremaining -= attackReceived.damage;
+			let pixelsLost = Math.round((attackReceived.damage/this.health) * 361);
 			let HBWidthOrig = this.HBWidth;
 			this.HBWidth -= pixelsLost;
 			if (this.HBWidth <= 0) {
@@ -164,12 +189,19 @@ angular.module('smiteApp')
 			
 		}
 		StartAttack(){
-			let god = this;
 			let attackingSide = this.side === 'left' ? 'right' : 'left';
-			let attackMSec = this.attack_msec;
-			let damage = this.damage;
-			let attack = () => god.events.Emit('attack'+attackingSide, damage);
-			this.events.AddInterval($interval(attack, attackMSec));
+			let attackFunc = function(defender){
+				let attackType = this.damage_Growth_Rate_Type === 'Physical Power' ? 'physical' : 'magical';
+				let flatPenetration = this[attackType+'penetration'] > 50 ? 50 : this[attackType+'penetration'];
+				let defense = (defender[attackType+'protection'] * (1-this[attackType+'reductionPercent']) - this[attackType+'reduction']) * (1-this[attackType+'penetrationPercent']) - flatPenetration;
+				let dmg =  (100 * this.damage) / (defense + 100);
+				let name = this.name;
+				console.log(this.name+' did '+dmg+' to '+defender.name);
+				return {damage: dmg, attacker: name};
+			};
+			attackFunc = attackFunc.bind(this);
+			let attack = () => this.events.Emit('attack'+attackingSide, attackFunc);
+			this.events.AddInterval($interval(attack, this.attack_msec));
 		}
 		StartDefense(){
 			let takeDamage = this.TakeDamage.bind(this);
@@ -188,14 +220,12 @@ angular.module('smiteApp')
 		return new FightingGod(god, side);
 	}
 	function setHealthBar (left, right){
-		var HBHeight = 36;
-		var HBWidth = 361;
 		left.forEach(god => {
 			let canvas = document.getElementById('canvas-'+god.name+'-left');
 			let ctx = canvas.getContext('2d');
 			ctx.fillStyle = '#ff0000';
-			ctx.fillRect(0,0, HBWidth, HBHeight);
-			god.HBWidth = HBWidth;
+			ctx.fillRect(0,0, canvas.width, canvas.height);
+			god.HBWidth = canvas.width;
 			god.healthbar = ctx;
 			god.StartAttack();
 			god.StartDefense();
@@ -204,8 +234,8 @@ angular.module('smiteApp')
 			let canvas = document.getElementById('canvas-'+god.name+'-right');
 			let ctx = canvas.getContext('2d');
 			ctx.fillStyle = '#ff0000';
-			ctx.fillRect(0,0, HBWidth, HBHeight);
-			god.HBWidth = HBWidth;
+			ctx.fillRect(0,0, canvas.width, canvas.height);
+			god.HBWidth = canvas.width;
 			god.healthbar = ctx;
 			god.StartAttack();
 			god.StartDefense();

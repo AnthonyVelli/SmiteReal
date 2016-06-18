@@ -1,16 +1,16 @@
-<div ng-repeat='god in chosen' ng-click="removeGod($event, $index)" flex layout='row'">
-	<md-card  class='god-card' md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch>
-		<md-card-title>
-			<md-card-title-text>
-				<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' width='361'></canvas>
-				<span class="md-headline">{{god.name}}</span>
-				<span class="md-subhead">{{god.class}}</span>
-				<span class="md-subhead">{{god.type}}</span>
-			</md-card-title-text>
-		</md-card-title>
-		<md-card-content layout="row" layout-align="space-between">
-			<img src={{god.smallimg}} class="md-media-xl card-media"></img>
-			<md-card-actions>
+<div ng-repeat='god in chosen' ng-click="removeGod($event, $index)" layout='column' flex='100'>
+	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='90'></canvas>
+	<div layout='row' class='god-card'>
+		<md-card  layout="row" layout-align='space-between'  flex='70'>
+			<div layout='column' flex='40' flex-offset='5'>
+				<div layout='column' height='20%'>
+					<span class="md-headline">{{god.name}}</span>
+					<span class="md-subhead">{{god.class}}</span>
+					<span class="md-subhead">{{god.type}}</span>
+				</div layout='column'>
+				<img src={{god.smallimg}} class="md-media-xl card-media"></img>
+			</div>
+			<div layout="row" flex-offset='5' layout-align="space-between">
 				<div class='table-responsive'>
 					<table class='table'>
 						<tbody>
@@ -46,19 +46,26 @@
 								<th>RNG</th>
 								<th>{{god.range}}</th>
 							</tr>
+							<tr>
+								<th>PROT PHYS</th>
+								<th>{{god.physicalprotection}}</th>
+							</tr>
+							<tr>
+								<th>PROT MAG</th>
+								<th>{{god.magicalprotection}}</th>
+							</tr>
 						</tbody>
 					</table>
 				</div>
-			</md-card-actions>
-			<md-list>
+			</div>
+			<md-list flex='30'>
 				<md-list-item ng-click='god.DeEquip($index); $event.stopPropagation();'' ng-repeat='item in god.equipment'>
 					<img ng-src={{item.image}} class='md-avatar'/>
 					<h3>{{item.name}}</h3>
 				</md-list-item>
 			</md-list>
-		</md-card-content>
-	</md-card>
-	<md-content class='god-card' flex>
+		</md-card>
+		<md-content class='god-card' flex>
 			<md-list-item class='md-3-line' ng-repeat='item in items' ng-click='god.Equip(item); $event.stopPropagation();'>
 				<img ng-src={{item.image}} class='md-avatar'/>
 				<div class='md-list-item-text' layout='column'>
@@ -66,5 +73,6 @@
 					<h4 ng-repeat='pro in item.pros'>{{pro}}</h4>
 				</div>
 			</md-list-item>
-	</md-content>
+		</md-content>
+	</div>
 </div>
