@@ -4,45 +4,6 @@ angular.module('smiteApp')
 	function roundToDecimal (val, places) {
 		return +(Math.round(val + 'e+' + places)  + 'e-' + places);
 	}
-	function compoundGrowth (base, inc, times){
-		inc+=1;
-		for (var x = 1; x < times; x++){
-			base *= inc;
-		}
-		return roundToDecimal(base, 3);
-	}
-
-	class God {
-		constructor(god, level){
-			this.level = level;
-			this.name = god.name;
-			this.health = god.health + (level * god.health_Growth_Rate);
-			this.mana = god.mana + (level * god.mana_Growth_Rate);
-			this.physical = god.physical + (level * god.physical_Growth_Rate);
-			this.magical = roundToDecimal((god.magical + (level * god.magical_Growth_Rate)), 2);
-			this.hp5 = roundToDecimal((god.hp5 + (god.hp5_Growth_Rate * level)), 2);
-			this.mp5 = roundToDecimal((god.mp5 + (god.mp5_Growth_Rate * level)), 2);
-			this.range = roundToDecimal((god.range + (level * god.range_Growth_Rate)), 2);
-			this.speed = roundToDecimal((god.speed + (level * god.speed_Growth_Rate)), 2);
-			this.physicalprotection = roundToDecimal((god.physicalprotection + (god.physicalprotection_Growth_Rate * level)), 2);
-			this.magicalprotection = roundToDecimal((god.magicalprotection + (god.magicalprotection_Growth_Rate * level)), 2);
-			this.baseDamage = roundToDecimal((god.damage + (level * god.damage_Growth_Rate)), 2);
-			this.damage_Growth_Rate_Inc = god.damage_Growth_Rate_Inc;
-			this.damage_Growth_Rate_Type = god.damage_Growth_Rate_Type;
-			this.damage = this.ReturnDamage();
-			this.attack_msec = compoundGrowth(god.attack_Sec, god.attack_Sec_Growth_Rate, level) * 1000;
-			this.class = god.class;
-			this.smallimg = god.smallimg;
-			this.type = god.type;
-		}
-
-		ReturnDamage(){
-			return roundToDecimal(this.baseDamage + (this.damage_Growth_Rate_Inc * (this.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical)), 2);
-		}
-		SetDamage(){
-			this.damage = this.ReturnDamage();
-		}
-	}
 
 	class EventEmitter {
 		constructor(){
@@ -134,6 +95,7 @@ angular.module('smiteApp')
 			}
 			this.SetDamage();
 			this.equipment[index] = {name: 'equip '+(index+1)};
+			return item;
 		}
 		Equip(item) {
 			console.log(this);

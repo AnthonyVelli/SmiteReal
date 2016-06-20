@@ -1,7 +1,7 @@
-<div ng-repeat='god in chosen' ng-click="removeGod($event, $index)" layout='column' flex='100'>
-	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='90'></canvas>
+<div ng-repeat='god in chosen'  layout='column'>
+	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='10'></canvas>
 	<div layout='row' class='god-card'>
-		<md-card  layout="row" layout-align='space-between'  flex='70'>
+		<md-card flex='70' ng-click="removeGod($event, $index); $event.stopPropagation();" layout="row" layout-align='space-between'>
 			<div layout='column' flex='40' flex-offset='5'>
 				<div layout='column' height='20%'>
 					<span class="md-headline">{{god.name}}</span>
@@ -59,20 +59,30 @@
 				</div>
 			</div>
 			<md-list flex='30'>
-				<md-list-item ng-click='god.DeEquip($index); $event.stopPropagation();'' ng-repeat='item in god.equipment'>
+				<md-list-item ng-click='deequip(god, $index); $event.stopPropagation();'' ng-repeat='item in god.equipment'>
 					<img ng-src={{item.image}} class='md-avatar'/>
 					<h3>{{item.name}}</h3>
 				</md-list-item>
 			</md-list>
 		</md-card>
-		<md-content class='god-card' flex>
-			<md-list-item class='md-3-line' ng-repeat='item in items' ng-click='god.Equip(item); $event.stopPropagation();'>
-				<img ng-src={{item.image}} class='md-avatar'/>
-				<div class='md-list-item-text' layout='column'>
+		<div flex='30' layout-fill layout='column' layout-align='center center'>
+			<item-filter flex='35' layout='column' search='search'></item-filter>
+			<md-content flex='65'>
+				<md-list-item class='md-3-line' ng-repeat="item in (items | orderBy:search.order)" ng-click='equip(god, $index, item); $event.stopPropagation();'>
+				<div class='item-image' ng-style="{'background-image':'url({{item.image}})'}" ></div>
+				<div class='md-list-item-text item-description' layout='column'>
 					<h3>{{item.name}}</h3>
-					<h4 ng-repeat='pro in item.pros'>{{pro}}</h4>
-				</div>
-			</md-list-item>
-		</md-content>
+					<div layout='row' layout-align='space-between center' ng-repeat='(name, value) in item.properties'>
+						<div>
+							<h5 class='item-property'>{{name}}</h5>
+						</div>
+						<div>
+							<h5 class='item-property'>{{value}}</h5>
+						</div>
+					</div>
+				</md-list-item>
+			</md-content>
+		</div>
 	</div>
 </div>
+<!-- filter: {name: search.text} |  -->

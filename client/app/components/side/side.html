@@ -1,8 +1,6 @@
-<md-sidenav class="md-sidenav-{{$ctrl.side}}" md-is-open='$ctrl.chosenGods.length===0' md-component-id={{$ctrl.side}}>
+<md-sidenav layout='column' class="md-sidenav-{{$ctrl.side}}" md-is-open='$ctrl.chosenGods.length===0' md-component-id={{$ctrl.side}}>
 	
-	<god-filter search='$ctrl.search'></god-filter>
-	
-	<god-list godlist="$ctrl.godlist" search='$ctrl.search' chosen="$ctrl.chosenGods" side="$ctrl.side" add-god="$ctrl.addGod" class='{{$ctrl.side}}-text'></god-list>
+	<god-list id='god-list-{{$ctrl.side}}' flex='100' godsall="$ctrl.godlist" search='$ctrl.search' chosen="$ctrl.chosenGods" side="$ctrl.side" add-god="$ctrl.addGod" class='{{$ctrl.side}}-text'></god-list>
 	
 </md-sidenav>
 <chosen flex='100' chosen="$ctrl.chosenGods" layout='row' items='$ctrl.items'></chosen>

@@ -6,8 +6,8 @@ angular.module('smiteApp')
 		url: '/',
 		templateUrl: 'app/main/main.html',
 		resolve: {
-			gods: (GodsFact, FightFact) => GodsFact.getAll()
-			.then(gods => gods.map(god => FightFact.createGod(god, 20)))
+			gods: GodsFact => GodsFact.getAll()
+			.then(gods => gods)
 		},
 		controller: ($scope, gods, FightFact) => {
 			$scope.gods = gods;

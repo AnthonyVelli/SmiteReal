@@ -13,7 +13,7 @@ angular.module('smiteApp')
     // Public API here
     return {
       getAll: function () {
-        return $http.get('/api/gods')
+        return $http.get('/api/levels')
         .then(gods => gods.data)
         .catch(error);
       }

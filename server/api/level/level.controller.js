@@ -1,26 +1,28 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/gods              ->  index
- * POST    /api/gods              ->  create
- * GET     /api/gods/:id          ->  show
- * PUT     /api/gods/:id          ->  update
- * DELETE  /api/gods/:id          ->  destroy
+ * GET     /api/levels              ->  index
+ * POST    /api/levels              ->  create
+ * GET     /api/levels/:id          ->  show
+ * PUT     /api/levels/:id          ->  update
+ * DELETE  /api/levels/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import {God} from '../../sqldb';
+import {Level} from '../../sqldb';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
     if (entity) {
-      console.log(entity.length);
-      return res.status(statusCode).json(entity);
+    	console.log('bout to return gods');
+    	console.log(entity.length);
+      res.status(statusCode).json(entity);
     }
   };
 }
+
 
 function saveUpdates(updates) {
   return function(entity) {
@@ -55,20 +57,20 @@ function handleEntityNotFound(res) {
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
-    console.log(err);
     res.status(statusCode).send(err);
   };
 }
-// Gets a list of Gods
+
+// Gets a list of Levels
 export function index(req, res) {
-  return God.findAll({attributes: ['name', 'type', 'class', 'pros', 'health', 'health_Growth_Rate', 'mana', 'mana_Growth_Rate', 'speed', 'speed_Growth_Rate', 'range', 'range_Growth_Rate', 'attack_Sec', 'attack_Sec_Growth_Rate', 'damage', 'damage_Growth_Rate', 'damage_Growth_Rate_2', 'progression', 'physical', 'physical_Growth_Rate', 'magical', 'magical_Growth_Rate', 'hp5', 'hp5_Growth_Rate', 'mp5', 'mp5_Growth_Rate', 'smallimg', 'magicalprotection_Growth_Rate', 'physicalprotection_Growth_Rate', 'physicalprotection' ,'magicalprotection']})
+  return Level.findAll({where: {level: 20}})
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single God from the DB
+// Gets a single Level from the DB
 export function show(req, res) {
-  return God.find({
+  return Level.find({
     where: {
       _id: req.params.id
     }
@@ -78,25 +80,19 @@ export function show(req, res) {
     .catch(handleError(res));
 }
 
-// Creates a new Gods in the DB
+// Creates a new Level in the DB
 export function create(req, res) {
-  return God.create(req.body)
+  return Level.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-export function saveLevel(req, res) {
-  return God.create(req.body)
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
-}
-
-// Updates an existing Gods in the DB
+// Updates an existing Level in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return God.find({
+  return Level.find({
     where: {
       _id: req.params.id
     }
@@ -107,9 +103,9 @@ export function update(req, res) {
     .catch(handleError(res));
 }
 
-// Deletes a Gods from the DB
+// Deletes a Level from the DB
 export function destroy(req, res) {
-  return God.find({
+  return Level.find({
     where: {
       _id: req.params.id
     }

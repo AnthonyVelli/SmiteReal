@@ -61,7 +61,7 @@ function handleError(res, statusCode) {
 // {attributes: ['name', 'image', 'class', 'description', 'pros']}
 // Gets a list of Items
 export function index(req, res) {
-  return Item.findAll()
+  return Item.findAll({where: {class: 'item'}})
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

@@ -3,7 +3,7 @@
 (function() {
 	class SideController {
 
-		constructor(ItemsFact) {
+		constructor() {
 			this.side = this.side;
 			this.chosenGods = this.chosenGods;
 			this.godlist = this.gods;
@@ -14,13 +14,7 @@
 				filter: '',
 				reverse: false
 			};
-			this.ItemsFact = ItemsFact;
 			this.items = [];
-		}
- 
-		$onInit(){
-			this.ItemsFact.getAll()
-			.then(items => items.forEach(item => this.items.push(item)));
 		}
 	}
 

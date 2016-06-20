@@ -8,9 +8,9 @@ angular.module('smiteApp')
     	filter: '&',
         search: '=',
     },
-    templateUrl: 'app/components/godfilter/godFilterTemplate.html',
+    templateUrl: 'app/components/godFilter/godFilterTemplate.html',
     link: scope => {
-    	var sortCount = 1;
+    	var sortCount = 0;
     	scope.clearFilter = () => {
     		scope.search.filter = '';
     		scope.search.text = '';
@@ -18,18 +18,20 @@ angular.module('smiteApp')
     	scope.sort = (element) => {
     		var target = element.target.parentElement.getAttribute('data-stat');
     		if (target === scope.search.order) {
-    			scope.search.reverse = !scope.search.reverse;
 				sortCount ++;
-    			if (sortCount === 3){
-    				scope.search.order = 'name';
-    				sortCount = 1;
-    				scope.search.reverse = false;
-    			}
+    			sortCount === 2 ? scope.clearSort() : scope.search.reverse = !scope.search.reverse;
     		} else {
-    			sortCount = 1;
+    			sortCount = 0;
     			scope.search.order = target;
     			scope.search.reverse = true;
     		}
+    	};
+
+    	scope.clearSort = () => {
+    		sortCount = 0;
+    		scope.search.order = 'name';
+    		scope.search.reverse = false;
+
     	};
     }
   };

@@ -1,0 +1,28 @@
+$hovercolor: rgba(158,158,158,0.2);
+
+.fltr-btn {
+	margin-left: 0;
+	margin-right: 0;
+	padding: 2% 2%;
+	min-width: 0;
+	min-height: 0;
+	max-height: 100%;
+	line-height: 10%;
+	:hover {
+		background-color: $hovercolor;
+	}
+}
+.active-fltr {
+	background-color: darken($hovercolor, 60%);
+}
+
+.filtr-header {
+	text-align: center;
+	margin: 2% 0%;
+}
+
+.filtr-input {
+	padding: 0 0;
+	line-height: 10%;
+	font-size: 14px;
+}

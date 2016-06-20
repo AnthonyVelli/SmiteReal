@@ -1,3 +1,32 @@
 .god-card {
-	max-height: 520px;
+	height: 520px;
+}
+
+.item-card {
+	max-height: 30vh;
+}
+
+.item-image {
+	content: "";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: .3;
+	background-position: center;
+	background-size: contain;
+	background-color: #000000;
+	background-repeat: no-repeat;
+}
+
+.item-description {
+	position: relative;
+    z-index: 1;
+}
+
+.item-property {
+	padding: 0;
+	margin: 0;
 }

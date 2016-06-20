@@ -12,6 +12,7 @@ var db = {
   sequelize: new Sequelize(config.sequelize.uri, config.sequelize.options)
 };
 // Insert models below
+db.Level = db.sequelize.import('../api/level/level.model');
 db.Item = db.sequelize.import('../api/item/item.model');
 db.God = db.sequelize.import('../api/gods/gods.model');
 db.User = db.sequelize.import('../api/user/user.model');

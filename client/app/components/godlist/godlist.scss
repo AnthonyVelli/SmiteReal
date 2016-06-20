@@ -1,13 +1,10 @@
-#god {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  border-bottom: 1px solid #b1966f;
-  padding: 15px;
-  cursor: pointer;
-}
 
-td {
+.no-side-padding {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
+}
+
+md-list {
+	border: ridge; 
+	border-width: 1px 1px;
 }
