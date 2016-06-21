@@ -1,41 +1,50 @@
-<god-filter flex='25' layout='column' layout-padding search='$ctrl.search'></god-filter>
-<div infinite-scroll='loadGods()' infinite-scroll-distance='2' infinite-scroll-container="scrollContainer" layout='column'>
-	<div ng-repeat="god in godlist | filter: {name: search.text, class: search.filter} | orderBy: search.order:search.reverse"> 
-		<md-card md-ink-ripple class="md-button" ng-click="addGod(god)">
-			<md-card-title class='no-side-padding'>
-				<md-card-title-text>
-					<span class="md-headline">{{god.name}}</span>
-					<span class="md-subhead">{{god.class}}</span>
-					<span class="md-subhead">{{god.type}}</span>
-				</md-card-title-text>
-				<md-card-title-media>
-					<img src={{god.smallimg}} class="md-media-sm card-media"></img>
-				</md-card-title-media>
-			</md-card-title>
-			<md-card-actions layout="row" layout-align="start center">
-				<table class='table'>
-					<thead>
+<god-filter flex='25' layout='column' layout-padding 
+	search='$ctrl.search' 
+	on-delete='$ctrl.disableFilter(filterType)' 
+	on-update='$ctrl.filter(element, filterType)'>
+</god-filter>
+<div class='scroll-hold' id='god-list-{{$ctrl.side}}' flex='75' layout='column'>
+	<div 
+	infinite-scroll='$ctrl.sendScroll()' 
+	infinite-scroll-distance='1'
+	infinite-scroll-container='$ctrl.scrollContainer'>
+		<div ng-repeat="god in $ctrl.gods | filter: {name: $ctrl.search.text, class: $ctrl.search.filter} | orderBy: $ctrl.search.order:$ctrl.search.reverse | limitTo: $ctrl.loadedGods"> 
+			<md-card md-ink-ripple class="md-button" ng-click="$ctrl.chooseGod(god)">
+				<md-card-title class='no-side-padding'>
+					<md-card-title-text>
+						<span class="md-headline">{{god.name}}</span>
+						<span class="md-subhead">{{god.class}}</span>
+						<span class="md-subhead">{{god.type}}</span>
+					</md-card-title-text>
+					<md-card-title-media>
+						<img src={{god.smallimg}} class="md-media-sm card-media"></img>
+					</md-card-title-media>
+				</md-card-title>
+				<md-card-actions layout="row" layout-align="start center">
+					<table class='table'>
+						<thead>
+							<tr>
+								<td class='no-side-padding' width='15%'>DMG</td>
+								<td class='no-side-padding' width='18%'>ATK/S</td>
+								<td class='no-side-padding' width='15%'>SPD</td>
+								<td class='no-side-padding' width='15%'>HP</td>
+								<td class='no-side-padding' width='15%'>MP</td>
+								<td class='no-side-padding' width='15%'>PHY</td>
+								<td class='no-side-padding' width='15%'>MAG</td>
+							</tr>
+						</thead>
 						<tr>
-							<td class='no-side-padding' width='15%'>DMG</td>
-							<td class='no-side-padding' width='18%'>ATK/S</td>
-							<td class='no-side-padding' width='15%'>SPD</td>
-							<td class='no-side-padding' width='15%'>HP</td>
-							<td class='no-side-padding' width='15%'>MP</td>
-							<td class='no-side-padding' width='15%'>PHY</td>
-							<td class='no-side-padding' width='15%'>MAG</td>
+							<td class='no-side-padding' width='15%'>{{god.damage}}</td>
+							<td class='no-side-padding' width='15%'>{{god.attack_msec}}</td>
+							<td class='no-side-padding' width='15%'>{{god.speed}}</td>
+							<td class='no-side-padding' width='15%'>{{god.health}}</td>
+							<td class='no-side-padding' width='15%'>{{god.mana}}</td>
+							<td class='no-side-padding' width='15%'>{{god.physical}}</td>
+							<td class='no-side-padding' width='15%'>{{god.magical}}</td>
 						</tr>
-					</thead>
-					<tr>
-						<td class='no-side-padding' width='15%'>{{god.damage}}</td>
-						<td class='no-side-padding' width='15%'>{{god.attack_msec}}</td>
-						<td class='no-side-padding' width='15%'>{{god.speed}}</td>
-						<td class='no-side-padding' width='15%'>{{god.health}}</td>
-						<td class='no-side-padding' width='15%'>{{god.mana}}</td>
-						<td class='no-side-padding' width='15%'>{{god.physical}}</td>
-						<td class='no-side-padding' width='15%'>{{god.magical}}</td>
-					</tr>
-				</table>
-			</md-card-actions>
-		</md-card>
+					</table>
+				</md-card-actions>
+			</md-card>
+		</div>
 	</div>
 </div>

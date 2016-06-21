@@ -1,7 +1,7 @@
 <div ng-repeat='god in chosen'  layout='column'>
 	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='10'></canvas>
 	<div layout='row' class='god-card'>
-		<md-card flex='70' ng-click="removeGod($event, $index); $event.stopPropagation();" layout="row" layout-align='space-between'>
+		<md-card flex='70' ng-click="$ctrl.removeGod($event, $index); $event.stopPropagation();" layout="row" layout-align='space-between'>
 			<div layout='column' flex='40' flex-offset='5'>
 				<div layout='column' height='20%'>
 					<span class="md-headline">{{god.name}}</span>

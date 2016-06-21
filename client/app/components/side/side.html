@@ -1,8 +1,19 @@
-<md-sidenav layout='column' class="md-sidenav-{{$ctrl.side}}" md-is-open='$ctrl.chosenGods.length===0' md-component-id={{$ctrl.side}}>
-	
-	<god-list id='god-list-{{$ctrl.side}}' flex='100' godsall="$ctrl.godlist" search='$ctrl.search' chosen="$ctrl.chosenGods" side="$ctrl.side" add-god="$ctrl.addGod" class='{{$ctrl.side}}-text'></god-list>
+<md-sidenav layout='column' class="md-sidenav-{{$ctrl.side}} side-nav" md-is-open='$ctrl.chosenGods.length===0' md-component-id={{$ctrl.side}}>
+
+	<god-list class='{{$ctrl.side}}-text' layout='column'
+		gods="$ctrl.godsLoaded" 
+		search='$ctrl.search' 
+		side="$ctrl.side" 
+		on-create="$ctrl.chooseGod(god)" 
+		scroll='$ctrl.loadGods()'
+		loaded-gods="$ctrl.loadedGods">
+	</god-list>
 	
 </md-sidenav>
-<chosen flex='100' chosen="$ctrl.chosenGods" layout='row' items='$ctrl.items'></chosen>
+
+<chosen flex='100' layout='row'
+	chosen="$ctrl.chosenGods"
+	onDelete='$ctrl.deSelect(god)'>
+</chosen>
 
 

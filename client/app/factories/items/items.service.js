@@ -5,19 +5,21 @@ angular.module('smiteApp')
 	function error (err) {
       console.error(err);
     }
+    var getting = false;
     var items = [];
-    // Public API here
-    return {
-      getAll: function () {
+    function getAll () {
+      	getting = true;
         return $http.get('/api/items')
         .then(foundItems => {
         	foundItems.data.forEach(item => items.push(item));
         	return items; })
         .catch(error);
-      },
+      }
+    // Public API here
+    return {
       getItems: function() {
-      	if (!items.length) {
-      		return this.getAll();
+      	if (!getting) {
+      		return getAll();
       	} else {
       		return items;
       	}
