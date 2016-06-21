@@ -4,14 +4,14 @@
 			<span class="filtr-header">FILTER</span>
 		</div>
 		<div layout='row' flex layout-align='center center'>
-			<input class='filtr-input' ng-model="search.text" placeholder='Name of Item'></label>
+			<input class='filtr-input' ng-model="$ctrl.search.text" placeholder='Name of Item'></label>
 		</div>
 	</div>
 	<div layout='column' flex='grow'>
 		<div flex layout='row' layout-align='center center'>
 			<div class="filtr-header">SORT</div>
 		</div>
-		<div flex='grow' layout='row' layout-align='center center' layout-wrap ng-click='sort($event)'>
+		<div flex='grow' layout='row' layout-fill layout-align='center center' layout-wrap ng-click='$ctrl.sort($event)'>
 			<md-button data-stat='cooldownreduction' class='fltr-btn md-raised'>COOLDOWN</md-button>	
 			<md-button data-stat='attack_msec' class='fltr-btn md-raised'>ATK/s</md-button>	
 			<md-button data-stat='speed' class='fltr-btn md-raised'>SPD</md-button>	
@@ -24,7 +24,7 @@
 			<md-button data-stat='mp5' class='fltr-btn md-raised'>MPS</md-button>	
 		</div>
 		<div flex='grow' layout='row' layout-align='center center'>
-			<md-button class='fltr-btn md-raised' ng-click='clearSort()'>Clear Sort</md-button>	
+			<md-button class='fltr-btn md-raised' ng-click='$ctrl.clearSort()'>Clear Sort</md-button>	
 		</div>
 	</div>
 </div>

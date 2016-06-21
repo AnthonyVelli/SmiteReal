@@ -2,15 +2,15 @@
 	<div flex="grow" layout='row' layout-align='center center' layout-padding>
 		<span class="filtr-header">FILTERS</span>
 	</div>
-	<div flex="grow" layout='row' layout-align='center center' ng-click='$ctrl.filter($event); $event.stopPropagation()' layout-padding>
-		<md-button ng-class="$ctrl.search.filter==='Mage' ? 'active-fltr' : 'md-raised'"  data-stat='mage' class='fltr-btn'>MAG</md-button>	
-		<md-button ng-class="$ctrl.search.filter==='Hunter' ? 'active-fltr' : 'md-raised'" data-stat='hunter' class='fltr-btn'>HUN</md-button>	
-		<md-button ng-class="$ctrl.search.filter==='Warrior' ? 'active-fltr' : 'md-raised'" data-stat='warrior' class='fltr-btn'>WAR</md-button>	
-		<md-button ng-class="$ctrl.search.filter==='Assassin' ? 'active-fltr' : 'md-raised'" data-stat='assassin' class='fltr-btn'>ASSN</md-button>	
-		<md-button ng-class="$ctrl.search.filter==='Guardian' ? 'active-fltr' : 'md-raised'" data-stat='guardian' class='fltr-btn'>GUA</md-button>	
+	<div flex="grow" layout='row' layout-align='center center' ng-click='$ctrl.filter($event)' layout-padding>
+		<md-button ng-class="$ctrl.search.filter==='mage' ? 'active-fltr' : 'md-raised'"  data-stat='mage' class='fltr-btn'>MAG</md-button>	
+		<md-button ng-class="$ctrl.search.filter==='hunter' ? 'active-fltr' : 'md-raised'" data-stat='hunter' class='fltr-btn'>HUN</md-button>	
+		<md-button ng-class="$ctrl.search.filter==='warrior' ? 'active-fltr' : 'md-raised'" data-stat='warrior' class='fltr-btn'>WAR</md-button>	
+		<md-button ng-class="$ctrl.search.filter==='assassin' ? 'active-fltr' : 'md-raised'" data-stat='assassin' class='fltr-btn'>ASSN</md-button>	
+		<md-button ng-class="$ctrl.search.filter==='guardian' ? 'active-fltr' : 'md-raised'" data-stat='guardian' class='fltr-btn'>GUA</md-button>	
 	</div>
 	<div flex="grow" layout='row' layout-align='center center' layout-padding >
-		<input class='filtr-input' ng-model="search.text" placeholder='Name of God'></label>
+		<input class='filtr-input' ng-model="$ctrl.search.text" placeholder='Name of God'></label>
 	</div>
 	<div flex="grow" layout='row' layout-align='center center' layout-padding >
 		<md-button class='fltr-btn md-raised' ng-click='$ctrl.clearFilter(); $event.stopPropagation()'>Clear Filters</md-button>	
@@ -20,7 +20,7 @@
 	<div flex="" layout='row' layout-align='center center' layout-padding>
 		<div class="filtr-header">SORT</div>
 	</div>
-	<div flex="grow" layout='row' layout-align='space-between center' layout-padding ng-click='$ctrl.sort($event); $event.stopPropagation();' justify-content='space-between'>
+	<div flex="grow" layout='row' layout-align='space-between center' layout-padding ng-click='$ctrl.sort($event)' justify-content='space-between'>
 		<md-button ng-class="$ctrl.search.order==='damage' ? 'active-fltr' : 'md-raised'" data-stat='damage' class='fltr-btn'>DMG</md-button>	
 		<md-button ng-class="$ctrl.search.order==='attack_msec' ? 'active-fltr' : 'md-raised'" data-stat='attack_msec' class='fltr-btn'>ATK/s</md-button>	
 		<md-button ng-class="$ctrl.search.order==='speed' ? 'active-fltr' : 'md-raised'" data-stat='speed' class='fltr-btn'>SPD</md-button>	

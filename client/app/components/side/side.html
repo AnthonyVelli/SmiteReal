@@ -4,16 +4,15 @@
 		gods="$ctrl.godsLoaded" 
 		search='$ctrl.search' 
 		side="$ctrl.side" 
-		on-create="$ctrl.chooseGod(god)" 
-		scroll='$ctrl.loadGods()'
-		loaded-gods="$ctrl.loadedGods">
+		on-create="$ctrl.selectGod(god)">
 	</god-list>
 	
 </md-sidenav>
 
-<chosen flex='100' layout='row'
+<equip-god flex='100' layout='row'
 	chosen="$ctrl.chosenGods"
-	onDelete='$ctrl.deSelect(god)'>
-</chosen>
+	onDelete='$ctrl.deSelect(god)'
+	side="$ctrl.side">
+</equip-god>
 
 

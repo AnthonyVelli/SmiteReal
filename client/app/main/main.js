@@ -11,8 +11,7 @@ angular.module('smiteApp')
 		},
 		controller: ($scope, gods, FightFact) => {
 			$scope.gods = gods;
-			$scope.chosenGodsLeft = [];
-			$scope.chosenGodsRight = [];
+
 			$scope.startFight = () => FightFact.setHealthBar($scope.chosenGodsLeft, $scope.chosenGodsRight, $scope);
 		}
 	});

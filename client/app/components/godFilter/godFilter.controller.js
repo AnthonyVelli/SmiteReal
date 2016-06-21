@@ -8,6 +8,7 @@
 		clearFilter () {
     		this.onDelete({filterType: 'filter'});
     	}
+
     	sort(element) {
     		var target = element.target.parentElement.getAttribute('data-stat');
     		if (!target) {
@@ -29,7 +30,7 @@
 
 	angular.module('smiteApp')
 	.component('godFilter', {
-	    templateUrl: 'app/components/godFilter/godFilterTemplate.html',
+	    templateUrl: 'app/components/godFilter/godFilter.html',
 	    controller: GodFilterController,
 	    bindings: {
 	    	onUpdate: '&',
