@@ -7,7 +7,7 @@ angular.module('smiteApp')
     }
     var tooLate = false;
     var items = [];
-    function getAll () {
+    function getItem () {
     	tooLate = true;
         return $http.get('/api/items')
         .then(foundItems => {
@@ -17,12 +17,15 @@ angular.module('smiteApp')
       }
     // Public API here
     return {
-      getItems: function() {
+      getAll: function() {
       	if (!tooLate) {
-      		return getAll();
+      		return getItem();
       	} else {
       		return items;
       	}
-      }
+      },
+      getOne: id => $http.get('/api/items/'+id)
+      .then(item => item.data)
+      .catch(error)
     };
   });

@@ -1,96 +1,124 @@
 <div ng-repeat='god in $ctrl.chosen' layout-fill layout='column'>
 	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='10'></canvas>
 	<div layout='row' class='god-card'>
-		<md-card flex='70' ng-click="$ctrl.removeGod($event, $index); $event.stopPropagation();" layout="row" layout-align='space-between'>
+		<md-card flex='70' ng-disabled='god.fighting' layout="row" layout-align='space-between'>
 			<div layout='column' flex='35' flex-offset='5'>
 				<div layout='column' height='20%'>
 					<span class="md-headline">{{god.name}}</span>
 					<span class="md-subhead">{{god.class}}</span>
 					<span class="md-subhead">{{god.type}}</span>
-				</div layout='column'>
+				</div>
 				<img src={{god.smallimg}} class="md-media-xl card-media"></img>
+				<div>
+					<div class='table-responsive'>
+						<table class='table'>
+							<tbody>
+								<tr ng-repeat='effect in god.activeEffects'>
+									<th>{{effect.name}}</th>
+									<th>{{effect.stat}}</th>
+									<th>{{effect.amount | number : 2}}</th>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
-			<div layout="row" flex-offset='5' layout-align="space-between">
+			<div layout="column" flex-offset='5' layout-align="space-between">
 				<div class='table-responsive'>
 					<table class='table'>
 						<tbody>
 							<tr>
 								<th>DMG</th>
-								<th>{{god.damage}}</th>
+								<th>{{god.damage | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>ATK/S</th>
-								<th>{{god.attack_msec}}</th>
-							</tr>
-							<tr>
-								<th>SPD</th>
-								<th>{{god.speed}}</th>
+								<th>{{god.attack_msec | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>HP</th>
-								<th>{{god.health}}</th>
+								<th>{{god.health | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>MP</th>
-								<th>{{god.mana}}</th>
+								<th>{{god.mana | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>PHY</th>
-								<th>{{god.physical}}</th>
+								<th>{{god.physical | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>MAG</th>
-								<th>{{god.magical}}</th>
-							</tr>
-							<tr>
-								<th>RNG</th>
-								<th>{{god.range}}</th>
+								<th>{{god.magical | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>PROT PHYS</th>
-								<th>{{god.physicalprotection}}</th>
+								<th>{{god.physicalprotection | number : 0}}</th>
 							</tr>
 							<tr>
 								<th>PROT MAG</th>
-								<th>{{god.magicalprotection}}</th>
+								<th>{{god.magicalprotection | number : 0}}</th>
+							</tr>
+							<tr>
+								<th>PEN PHYS</th>
+								<th>{{god.physicalpenetration | number : 0}}</th>
+							</tr>
+							<tr>
+								<th>PEN MAG</th>
+								<th>{{god.magicalpenetration | number : 0}}</th>
 							</tr>
 						</tbody>
 					</table>
 				</div>
+				<md-button ng-show='!god.fighting' class="md-raised md-primary" ng-click="$ctrl.removeGod($index); $event.stopPropagation();">Choose New God</md-button>	
 			</div>
 			<md-list flex='35'>
-				<md-list-item ng-click='$ctrl.deequip(god, $index); $event.stopPropagation();'' ng-repeat='item in god.equipment'>
-					<img ng-src={{item.image}} class='md-avatar'/>
-					<h3>{{item.name}}</h3>
+				<md-list-item ng-disabled='god.fighting || !item._id' ng-click='$ctrl.deequip(god, $index)' ng-repeat='item in god.equipment'>
+					<div layout='row'>
+						<img ng-src={{item.image}} class='md-avatar'/>
+						<h4>{{item.name}}</h4>
+					</div>
 				</md-list-item>
 			</md-list>
 		</md-card>
 		<div flex='30' layout-fill layout='column' layout-align='center center'>
 			<item-filter flex='35' layout='column' 
-				search='$ctrl.search'
-				on-delete='$ctrl.removeFilters()'
-				on-update='$ctrl.sort(target)'>
-			</item-filter>
-			<div id='item-list-{{$ctrl.side}}' class='scroll-hold' flex='65' layout='column'>
-				<div
-						infinite-scroll='$ctrl.onScroll()' 
-						infinite-scroll-distance='1'
-						infinite-scroll-container='$ctrl.scrollContainer'>
-					<md-list-item ng-repeat="item in ($ctrl.items | filter:{name: $ctrl.search.text} | orderBy:$ctrl.search.order | limitTo: $ctrl.loadedItems)" class='md-3-line' ng-click='$ctrl.equip(god, $index, item); $event.stopPropagation();'>
-						<div class='item-image' ng-style="{'background-image':'url({{item.image}})'}" ></div>
-						<div class='md-list-item-text item-description' layout='column'>
-							<h3>{{item.name}}</h3>
-							<div layout='row' layout-align='space-between center' ng-repeat='(name, value) in item.properties'>
-								<div>
-									<h5 class='item-property'>{{name}}</h5>
-								</div>
-								<div>
-									<h5 class='item-property'>{{value}}</h5>
-								</div>
-							</div>
-					</md-list-item>
-				</div>
+			search='$ctrl.search'
+			on-delete='$ctrl.removeFilters()'
+			on-update='$ctrl.sort(target)'>
+		</item-filter>
+		<div id='item-list-{{$ctrl.side}}' class='scroll-hold' flex='65' layout='column'>
+			<div
+			infinite-scroll='$ctrl.onScroll()' 
+			infinite-scroll-distance='1'
+			infinite-scroll-container='$ctrl.scrollContainer'>
+			<md-list-item ng-repeat="item in ($ctrl.items | filter:{name: $ctrl.search.text} | orderBy:$ctrl.search.order) | limitTo: $ctrl.loadedItems track by item._id" class='md-3-line' ng-disabled='god.fighting' ng-click='$ctrl.equip(god, item); $event.stopPropagation();'>
+				<md-tooltip ng-if='item.description' md-direction="{{god.attackingSide}}">
+					{{item.description}}
+				</md-tooltip>
+				<div class='item-image' ng-style="{'background-image':'url({{item.image}})'}" ></div>
+				<div class='md-list-item-text item-description' layout='column'>
+					<h3>{{item.name}}</h3>
+					<div layout='row' layout-align='space-between center' ng-repeat='(name, value) in item.properties'>
+						<div>
+							<h5 class='item-property'>{{name}}</h5>
+						</div>
+						<div>
+							<h5 class='item-property'>{{value}}</h5>
+						</div>
+					</div>
+					<div ng-show='item.Ability.stacks=="KILL"' ng-click='$event.stopPropagation()' layout='row' layout-align='space-between center' >
+						<div>
+							<h5 class='item-property'>Stacks</h5>
+						</div>
+						<div>
+							<input aria-label='Stack Count' class='item-property' ng-model='item.Ability.stackCount' min="0" max='item.Ability.maxStacks' required type='number'>
+						</div>
+					</div>
+					<h5 ng-show='item.description' class='item-property'>*passive properties</h5>
+				</md-list-item>
 			</div>
 		</div>
 	</div>
+</div>
 </div>

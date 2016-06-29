@@ -1,49 +1,136 @@
 'use strict';
 angular.module('smiteApp')
-.factory('FightFact', function($interval){
-	function roundToDecimal (val, places) {
-		return +(Math.round(val + 'e+' + places)  + 'e-' + places);
-	}
+.factory('FightFact', function($interval, EEFact, HelperFact){
+	const HF = HelperFact;
+	var EE = EEFact.getEE();
 
-	class EventEmitter {
-		constructor(){
-			this.events = {
-				attackleft: [],
-				attackright: []
-			};
-			this.interval = [];
+	class Effect {
+		constructor(name, effectChain, god){
+			this.effectChain = effectChain;
+			this.name = name;
+			this.stat = effectChain.effect.stat;
+			this.operator = effectChain.effect.condition;
+			this.amount = null;
+			this.parseEffectChain(god);
 		}
-		Emit(eName, arg){
-			this.events[eName].forEach(func => func(arg));
-		}
-		On(eName, func){
-			if (this.events[eName]) {
-				this.events[eName].push(func);
-			} else {
-				this.events[eName] = [func];
+		parseEffectChain(god){
+			var effectChain = this.effectChain;
+			if (!effectChain[effectChain.effect.amount]) {
+				this.amount = HF.toFloatOne(effectChain.effect.amount);
+				return;
 			}
-		}
-		CancelAllIntervals(){
-			this.interval.forEach(e => $interval.cancel(e));
-		}
-		AddInterval(interval){
-			this.interval.push(interval);
+			function recurseChain (effect){
+				var stat = god[effect.stat] ? god[effect.stat] : effect.stat;
+				var amount = god[effect.amount] ? god[effect.amount] : effect.amount;
+				if (/s[0-9]/.test(effect.stat) && /s[0-9]/.test(effect.amount)) {
+					return HF.convertOperators(effect.condition)(recurseChain(effectChain[effect.stat]), recurseChain(effectChain[effect.amount]));
+				} else if (/s[0-9]/.test(effect.stat)) {
+					return HF.convertOperators(effect.condition)(recurseChain(effectChain[effect.stat]), amount);
+				} else if (/s[0-9]/.test(effect.amount)) {
+					return HF.convertOperators(effect.condition)(stat, recurseChain(effectChain[effect.amount]));
+				} else {
+					return HF.convertOperators(effect.condition)(stat, amount);
+				}
+			}
+			this.amount = HF.roundToDecimal(recurseChain(effectChain[effectChain.effect.amount]), 2);
+			console.log(this.amount);
 		}
 	}
 
-	var events = new EventEmitter();
+
 
 	class Ability {
-		constructor(ability){
-			this.name = ability.name;
-
+		constructor(abilObj){
+			this.owner = abilObj.owner;
+			this.name = abilObj.name;
+			this.activeEffects = [];
+			this.ability = typeof abilObj.effectObj === 'function' ? abilObj.effectObj : this.parseAbility(abilObj.effectObj);
+			this.trigger = typeof abilObj.trigger === 'function' ? abilObj.trigger : this.parseTrigger(abilObj.trigger);
+			this.active = false;
+			this.stacks = 0;
+			this.interval = abilObj.interval;
+			this.intervalFunc = null;
+			this.emitName = abilObj.emitName;
 		}
+
+
+		addEffect(effect) {
+			console.log(effect.effect);
+			var effectInstance = new Effect(this.name, effect, this.owner);
+			this.activeEffects.push(effectInstance);
+			console.log(effectInstance);
+			this.owner.RegisterEffect(effectInstance);
+		}
+
+		emitEffect(effect){
+			return function(god){
+				var effectInstance = new Effect(this.name, effect, god);
+				this.activeEffects.push(effectInstance);
+				god.RegisterEffect(effectInstance);
+			}.bind(this);
+		}
+
+		destroy(){
+			this.intervalFunc.destroy();
+			this.activeEffects.forEach(eff => {
+				EE.Emit('destroyEffect', eff);
+			});
+		}
+
+		parseAbility(effectObj){
+			return function(){
+				this.active = true;
+				effectObj.forEach(effect => {
+					if (effect.effect.target === 'this' || effect.effect.target === 'allies') {
+						this.addEffect(effect);
+					} else {
+						var boundEffect = this.emitEffect(effect);
+						console.log(EE);
+						EE.Emit('attack'+this.owner.attackingSide, boundEffect);
+					}
+				});
+			};
+		}
+
+
+		parseTrigger(triggerComp){
+			switch(triggerComp.triggertype) {
+				case '1':
+					return () => true;
+				case 'distance':
+					return () => true;
+				case 'event':
+					return function(){
+						this.active = true;
+						let side = triggerComp.target === 'this' || triggerComp.target === 'allies' ? this.owner.side : this.owner.attackingSide;
+						let boundAbility = this.ability.bind(this);
+						EE.On(triggerComp.stat+side, boundAbility);
+					};
+				case 'stat':
+					return function(){
+						return HF.convertOperators(triggerComp.condition)(this.owner[triggerComp.stat], triggerComp.amount);
+					};
+				default:
+					return () => false;
+			}
+		}
+
+		//checks to see if ability should be activated
+		checkAbility(event){
+			if (!this.active && this.trigger(event)) {
+			console.log(this);
+				this.ability();
+			}
+		}
+
 	}
+
+
 
 	class FightingGod {
 		constructor(god, side){
-			this.events = events;
 			this.name = god.name;
+			this._id = god._id;
 			this.class = god.class;
 			this.smallimg = god.smallimg;
 			this.type = god.type;
@@ -61,12 +148,12 @@ angular.module('smiteApp')
 			this.damage_Growth_Rate_Type = god.damage_Growth_Rate_Type;
 			this.attack_msec = god.attack_msec;
 			this.side = side;
-			this.health = god.health;
+			this.attackingSide = side === 'left' ? 'right' : 'left';
 			this.healthremaining = god.health;
+			this.percenthealthremaining = 1.0;
 			this.cooldownreduction = 0;
 			this.criticalstrikechance = 0;
 			this.crowdcontrolreduction = 0;
-			this.abilities = this.SetAbility(god);
 			this.magicalprotection = god.magicalprotection;
 			this.physicalprotection = god.physicalprotection;
 			this.magicallifesteal = 0;
@@ -79,14 +166,152 @@ angular.module('smiteApp')
 			this.physicalpenetrationPercent = 0;
 			this.physicalreduction = 0;
 			this.physicalreductionPercent = 0;
+			this.shield = 0;
+			this.fighting = false;
+			this.abilities = [];
 			this.equipment = [{name: 'equip 1'}, {name: 'equip 2'}, {name: 'equip 3'}, {name: 'equip 4'}, {name: 'equip 5'}];
+			this.activeEffects = [];
 		}
 
-		SetAbility(ability){
-			let abilityObj = {};
-			abilityObj[ability.name] = new Ability(ability);
-			return abilityObj;
+		Initialize(){
+			//create auto attack ability
+			let abilObj = {
+				name: this.name,
+				owner: this,
+				effectObj: this.BasicAttack,
+				trigger: () => true,
+				interval: this.attack_msec,
+				emitName: 'attack'+this.attackingSide
+			};
+			var attackingAbil = new Ability(abilObj);
+			this.abilities.push(attackingAbil);
+
+			//register ee listeners
+			let receiveAttack = this.ReceiveAttack.bind(this);
+			EE.On('attack'+this.side, receiveAttack);
 		}
+
+		//auto attack function.  added to abilities array & sent as argument in emit function at attack_msec interval
+		BasicAttack(){
+			console.log('running basic attack');
+			this.active = true;
+			var eeFunction = function(defender){
+				defender.RunAbilities('attack');
+				let attackType = this.owner.damage_Growth_Rate_Type === 'Physical Power' ? 'physical' : 'magical';
+				let flatPenetration = this[attackType+'penetration'] > 50 ? 50 : this.owner[attackType+'penetration'];
+				let defense = (defender[attackType+'protection'] * (1-this.owner[attackType+'reductionPercent']) - this.owner[attackType+'reduction']) * (1-this.owner[attackType+'penetrationPercent']) - flatPenetration;
+				let dmg =  (100 * this.owner.damage) / (defense + 100);
+				return {stat: 'healthremaining', amount: -dmg, target: defender};
+			}.bind(this);
+			this.intervalFunc = EE.AddInterval(this.emitName, eeFunction, this.interval);
+		}
+
+		//function run when destroyEffect is emitted.  received effect to be destroyed & pulls from gods activeEffects array.
+		DestroyEffect(Effect){
+			console.log(this.activeEffects);
+			this.activeEffects.splice(this.activeEffects.findIndex(eff => eff === Effect), 1);
+			console.log(this.activeEffects);
+		}
+
+		//function run when this god's side is attacked.  argument received should be a function.  god being attacked is passed into received function.
+		ReceiveAttack(attack){
+			let attackReceived = attack(this);
+			let logObj = {};
+			logObj.name = attackReceived.target.name;
+			logObj.attack = attackReceived.stat;
+			logObj.amount = attackReceived.amount;
+			logObj.time = new Date().getTime();
+			EE.Emit('log', logObj);
+			if (attackReceived.stat === 'healthremaining'){
+				this.TakeDamage(attackReceived.amount);
+			} else {
+				attackReceived.target[attackReceived.stat] += attackReceived.amount;
+			}
+			this.UpdateEffects();
+		}
+
+		//run when this god receives damage.  updates healthpercentremaining & health bar canvas.  Handles Death condition.
+		TakeDamage(dmg){
+			if (this.shield) {
+				var dmgRemainder = dmg + this.shield;
+				this.shield += dmg;
+				dmg = dmgRemainder;
+			}
+			var HBWidthPrev = this.HBWidth;
+			let pixelsLost = Math.round((dmg/this.healthremaining) * this.HBWidth);
+			this.healthremaining += dmg;
+			if (this.healthremaining <= 0) {
+				return this.Die();
+			}
+			this.percenthealthremaining = HF.roundToDecimal(this.healthremaining/this.health, 2);
+			this.HBWidth += pixelsLost;
+			this.healthbar.clearRect(this.HBWidth,0 ,HBWidthPrev, 36);
+		}
+
+
+		//run to activate passive abilites.  Can be run by this gods passive abilities, and other gods abilities through an emit.
+		RegisterEffect(effect){
+			this[effect.stat] = HF.convertOperators(effect.operator)(this[effect.stat], effect.amount);
+			this.activeEffects.push(effect);
+		}
+
+
+		//run on every attack of this side.  updates all effects, 
+		UpdateEffects(){
+			this.activeEffects.forEach(effect => {
+				var oldModifier = effect.amount;
+				var godWOMod = new Object(this);
+				godWOMod[effect.stat] -= effect.amount;
+				console.log(godWOMod);
+				effect.parseEffectChain(godWOMod);
+				if (effect.amount !== oldModifier){
+					effect.amount -= oldModifier;
+					this[effect.stat] = HF.convertOperators(effect.operator)(this[effect.stat], effect.amount);
+					console.log('effect updated');
+					console.log(this[effect.stat]);
+				}
+			});
+		}
+
+		//checks to see if any dormant abilities should be activated.  Run at the beginning of a fight, and when this god is attacked.  
+		RunAbilities(event){
+			this.abilities.forEach(ability => {
+				console.log(ability);
+				ability.checkAbility(event);
+			});
+			this.SetDamage();
+		}
+
+
+
+		//creates abilities, and adds them to this god's abilities array.  
+		SetAbility(item){
+			let trigger = item.Ability.Components.find(comp => comp.type === 'trigger');
+			let effects = item.Ability.Components.filter(comp => /effect[0-9]/.test(comp.type) );
+			let sComps = item.Ability.Components.filter(comp => /s[0-9]/.test(comp.type));
+			let effectChains = effects.map(component => {
+				let effectObj = {};
+				effectObj.effect = component;
+				sComps.forEach(s => effectObj[s.type] = s);
+				return effectObj;
+			});
+			let abilObj = {
+				name: item.name,
+				owner: this,
+				effectObj: effectChains,
+				trigger: trigger,
+				emitName: 'attack'+this.attackingSide
+			};
+
+			let newAbility = new Ability(abilObj);
+			this.abilities.push(newAbility);
+			console.log('checking abil');
+			console.log(abilObj.effectObj);
+			console.log(abilObj.trigger);
+			newAbility.checkAbility();
+			this.SetDamage();
+		}
+
 
 		DeEquip(index) {
 			var item = this.equipment[index];
@@ -95,10 +320,27 @@ angular.module('smiteApp')
 			}
 			this.SetDamage();
 			this.equipment[index] = {name: 'equip '+(index+1)};
+			var abilityToDestroyID = this.abilities.findIndex(ability => ability.name === item.name);
+			if (abilityToDestroyID !== -1) {
+				let abilityToDestroy = this.abilities[abilityToDestroyID];
+				abilityToDestroy.intervalFunc && EE.Destroy(abilityToDestroy.intervalFunc);
+				abilityToDestroy.activeEffects.forEach(effect => {
+					EE.Emit('destroyEffect', effect);
+				});
+				this.abilities.splice(abilityToDestroyID, 1);
+			}
 			return item;
 		}
+
+		ReturnItems(){
+			return this.equipment.filter(item => item._id);
+		}
+
+
 		Equip(item) {
-			console.log(this);
+			if (item.Ability && item.Ability.Components) {
+				// this.SetAbility(item);
+			}
 			let equipSlot = this.equipment.findIndex(slot => /equip [0-9]/.test(slot.name));
 			if (equipSlot+1) {
 				for (var stat in item.properties) {
@@ -110,102 +352,66 @@ angular.module('smiteApp')
 		}
 
 		StatIncrease(stat, measure){
-			console.log(this[stat]+'+'+measure);
 			if (stat === 'attack_msec') {
 				this.attack_msec = Math.round(this.attack_msec / measure, 2);
 			} else if (measure % 1) {
-				this[stat] = roundToDecimal(this[stat] * measure, 2);
+				this[stat] = HF.roundToDecimal(this[stat] * measure, 2);
 			} else {
 				this[stat] += measure;
 			}
-			console.log(this[stat]);
 		}
 
 		StatDecrease(stat, measure){
-			console.log(this[stat]+'-'+measure);
 			if (stat === 'attack_msec') {
 				this.attack_msec = Math.round(this.attack_msec * measure, 2);
 			} else if (measure % 1) {
-				this[stat] = roundToDecimal(this[stat] / measure, 2);
+				this[stat] = HF.roundToDecimal(this[stat] / measure, 2);
 			} else {
 				this[stat] -= measure;
 			}
-			console.log(this[stat]);
 		}
 
-		PercentHealthRemaining(){
-			var percentRemaining = Math.round((this.healthremaining/this.health) * 100);
-			return percentRemaining+'%';
+
+
+		Die(){
+			EE.CancelAllIntervals();
+			this.healthbar.clearRect(0,0 ,this.HBWidth, 36);
 		}
-		TakeDamage(attack){
-			let attackReceived = attack(this);
-			this.healthremaining -= attackReceived.damage;
-			let pixelsLost = Math.round((attackReceived.damage/this.health) * 361);
-			let HBWidthOrig = this.HBWidth;
-			this.HBWidth -= pixelsLost;
-			if (this.HBWidth <= 0) {
-				this.HBWidth = 0;
-				this.events.CancelAllIntervals();
-			}
-			this.healthbar.clearRect(this.HBWidth,0 ,HBWidthOrig, 36);
-			
+
+		
+
+		SetDamage(){
+			this.damage = HF.roundToDecimal(this.baseDamage + (this.damage_Growth_Rate_Inc * (this.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical)), 2);
 		}
-		StartAttack(){
-			let attackingSide = this.side === 'left' ? 'right' : 'left';
-			let attackFunc = function(defender){
-				let attackType = this.damage_Growth_Rate_Type === 'Physical Power' ? 'physical' : 'magical';
-				let flatPenetration = this[attackType+'penetration'] > 50 ? 50 : this[attackType+'penetration'];
-				let defense = (defender[attackType+'protection'] * (1-this[attackType+'reductionPercent']) - this[attackType+'reduction']) * (1-this[attackType+'penetrationPercent']) - flatPenetration;
-				let dmg =  (100 * this.damage) / (defense + 100);
-				let name = this.name;
-				console.log(this.name+' did '+dmg+' to '+defender.name);
-				return {damage: dmg, attacker: name};
-			};
-			attackFunc = attackFunc.bind(this);
-			let attack = () => this.events.Emit('attack'+attackingSide, attackFunc);
-			this.events.AddInterval($interval(attack, this.attack_msec));
-		}
-		StartDefense(){
-			let takeDamage = this.TakeDamage.bind(this);
-			this.events.On('attack'+this.side, takeDamage);
+
+		StartFight() {
+			//set up healthbar canvas
+			let canvas = document.getElementById('canvas-'+this.name+'-'+this.side);
+			let ctx = canvas.getContext('2d');
+			ctx.fillStyle = '#ff0000';
+			ctx.fillRect(0,0, canvas.width, canvas.height);
+			this.HBWidth = canvas.width;
+			this.healthbar = ctx;
+			this.fighting = true;
+			this.Initialize();
+			this.RunAbilities();
 		}
 		
-		SetDamage(){
-			this.damage = roundToDecimal(this.baseDamage + (this.damage_Growth_Rate_Inc * (this.damage_Growth_Rate_Type === 'Magical Power' ? this.magical : this.physical)), 2);
-		}
 	}
 
-	function createGod (god, level){
-		return new God(god, level);
-	}
 	function createFighter (god, side){
-		return new FightingGod(god, side);
+		var newGod = new FightingGod(god, side);
+		let destroyEffect = newGod.DestroyEffect.bind(newGod);
+		EE.On('destroyEffect', destroyEffect);
+		return newGod;
 	}
-	function setHealthBar (left, right){
-		left.forEach(god => {
-			let canvas = document.getElementById('canvas-'+god.name+'-left');
-			let ctx = canvas.getContext('2d');
-			ctx.fillStyle = '#ff0000';
-			ctx.fillRect(0,0, canvas.width, canvas.height);
-			god.HBWidth = canvas.width;
-			god.healthbar = ctx;
-			god.StartAttack();
-			god.StartDefense();
-		});
-		right.forEach(god => {
-			let canvas = document.getElementById('canvas-'+god.name+'-right');
-			let ctx = canvas.getContext('2d');
-			ctx.fillStyle = '#ff0000';
-			ctx.fillRect(0,0, canvas.width, canvas.height);
-			god.HBWidth = canvas.width;
-			god.healthbar = ctx;
-			god.StartAttack();
-			god.StartDefense();
-		});
+
+	function setEE(){
+		EE = EEFact.getEE();
 	}
+
 	return {
-		setHealthBar: setHealthBar,
-		createGod: createGod,
+		setEE: setEE,
 		createFighter: createFighter
 	};
 });

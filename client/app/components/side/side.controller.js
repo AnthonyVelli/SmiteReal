@@ -3,21 +3,18 @@
 (function() {
 	class SideController {
 
-		constructor(FightFact) {
+		constructor() {
 			this.side = this.side;
-			this.chosenGods = [];
 			this.godList = this.gods;
 			this.godsLoaded = this.gods;
-			this.open = true;
-			this.FightFact = FightFact;
 		}
 
     	selectGod(god) {
-    		this.chosenGods.push(this.FightFact.createFighter(god, this.side));
+    		this.onCreate({god: god, side: this.side});
     	}
 
-    	deSelectGod(godID){
-    		this.chosenGods.splice(godID, 1);
+    	deSelectGod(id){
+    		this.chosenGods.splice(id, 1);
     	}
 	}
 
@@ -27,7 +24,9 @@
 		controller: SideController,
 		bindings: {
 			gods: '<',
-			side: '@'
+			side: '@',
+			chosenGods: '<',
+			onCreate: '&'
 		}
 	});
 })();

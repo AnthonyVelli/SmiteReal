@@ -1,0 +1,8 @@
+<div scroll-glue-right="true" class='fight-timeline' layout=row layout-align='start center'>
+		<div ng-repeat='event in $ctrl.events' layout='column' layout-margin>
+			<p>{{event.sinceFightStart | number:2}} seconds</p>
+			<p>{{event.name}}</p>
+			<p>{{event.attack}}</p>
+			<p>{{event.amount | number:2}}</p>
+		</div>
+</div>

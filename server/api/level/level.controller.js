@@ -16,8 +16,6 @@ function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
     if (entity) {
-    	console.log('bout to return gods');
-    	console.log(entity.length);
       res.status(statusCode).json(entity);
     }
   };

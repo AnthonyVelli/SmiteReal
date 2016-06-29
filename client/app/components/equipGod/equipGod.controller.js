@@ -12,7 +12,7 @@
 		}
 
 		$onInit(){
-			var itemTest = this.ItemsFact.getItems();
+			var itemTest = this.ItemsFact.getAll();
 			if (Array.isArray(itemTest)) {
 				this.items = itemTest;
 				this.itemCount = itemTest.length;
@@ -34,14 +34,21 @@
     		this.loadeditems = toLoad;
 		}
 
-		removeGod($event, $index) {
-			console.log($index);
-			console.log($event);
-			this.onDelete($index);
+		removeGod($index) {
+			console.log(this.chosen[0].ReturnItems());
+			this.items.push(...this.chosen[0].ReturnItems());
+			this.onDelete({id: $index});
 		}
-		equip(god, idx, item) {
-			var itemToSplice = this.items.indexOf(item);
-			god.Equip(this.items.splice(itemToSplice, 1)[0]);
+		equip(god, itemClicked) {
+
+			var itemIDXToSplice = this.items.findIndex(item => item._id === itemClicked._id);
+			console.log(this.items[itemIDXToSplice] === itemClicked);
+			console.log(itemClicked);
+			if (itemClicked.Ability && itemClicked.Ability.stacks==='KILL' && !itemClicked.Ability.stackCount) {
+				console.log('missing stackcount');
+			} else {
+				god.Equip(this.items.splice(itemIDXToSplice, 1)[0]);
+			}
 		}
 
 		deequip(god, item) {

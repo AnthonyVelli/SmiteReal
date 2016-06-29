@@ -11,6 +11,8 @@
 
 import _ from 'lodash';
 import {Item} from '../../sqldb';
+import {Ability} from '../../sqldb';
+import {Component} from '../../sqldb';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -61,7 +63,14 @@ function handleError(res, statusCode) {
 // {attributes: ['name', 'image', 'class', 'description', 'pros']}
 // Gets a list of Items
 export function index(req, res) {
-  return Item.findAll({where: {class: 'item'}})
+  return Item.findAll({
+  	where: {
+  		class: 'item'
+  	},
+	include: {
+    	model: Ability, include: [Component]
+    }
+  })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
@@ -71,6 +80,9 @@ export function show(req, res) {
   return Item.find({
     where: {
       _id: req.params.id
+    }, 
+    include: {
+    	model: Ability, include: [Component]
     }
   })
     .then(handleEntityNotFound(res))
