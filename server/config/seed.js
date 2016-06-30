@@ -25,6 +25,7 @@ var Item = _sqldb2.default.Item;
 var Level = _sqldb2.default.Level;
 var Ability = _sqldb2.default.Ability;
 var Component = _sqldb2.default.Component;
+var seedLocation = process.env.seedLocation || './seedData';
 
 function roundToDecimal(val, places) {
 	return +(Math.round(val + 'e+' + places) + 'e-' + places);
@@ -68,7 +69,7 @@ Level.sync({ force: true }).then(function () {
 God.sync({ force: true }).then(function () {
 	return God.destroy({ where: {} });
 }).then(function () {
-	return _sequelizeFixtures2.default.loadFile('./seedData/gods.json', { gods: God });
+	return _sequelizeFixtures2.default.loadFile(seedLocation + '/gods.json', { gods: God });
 }).then(function (done) {
 	console.log('Gods seeded');
 	return God.findAll();
@@ -89,7 +90,7 @@ God.sync({ force: true }).then(function () {
 Item.sync({ force: true }).then(function () {
 	return Item.destroy({ where: {} });
 }).then(function () {
-	return _sequelizeFixtures2.default.loadFile('./seedData/itemsFinal.json', { items: Item });
+	return _sequelizeFixtures2.default.loadFile(seedLocation + '/itemsFinal.json', { items: Item });
 }).then(function (done) {
 	return console.log('Items seeded');
 }).then(function () {
@@ -101,7 +102,7 @@ Item.sync({ force: true }).then(function () {
 }).then(function () {
 	return Component.destroy({ where: {} });
 }).then(function () {
-	return _sequelizeFixtures2.default.loadFile('./seedData/itemTable/itemPassiveTable.json', { ability: Ability, component: Component });
+	return _sequelizeFixtures2.default.loadFile(seedLocation + '/itemTable/itemPassiveTable.json', { ability: Ability, component: Component });
 }).then(function () {
 	return Ability.findAll();
 }).then(function (abilities) {
