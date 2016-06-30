@@ -14,9 +14,11 @@ module.exports = {
   sequelize: {
     uri: process.env.DATABASE_URL,
     options: {
-      native: true,
       dialect: 'postgres',
-      protocol: 'postgres'
+      protocol: 'postgres',
+      dialectOptions: {
+        ssl: true
+      }
     }
   }
 };
