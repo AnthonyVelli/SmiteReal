@@ -27,6 +27,10 @@ var all = {
   // Should we populate the DB with sample data?
   seedDB: true,
 
+  secrets: {
+  	session: process.env.SESSION_SECRET
+  }
+
 };
 
 // Export the config object based on the NODE_ENV

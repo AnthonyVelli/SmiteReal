@@ -557,13 +557,7 @@ gulp.task('build:images', () => {
             progressive: true,
             interlaced: true
         }))
-        .pipe(plugins.rev())
-        .pipe(gulp.dest(`${paths.dist}/${clientPath}/assets/images`))
-        .pipe(plugins.rev.manifest(`${paths.dist}/${clientPath}/assets/rev-manifest.json`, {
-            base: `${paths.dist}/${clientPath}/assets`,
-            merge: true
-        }))
-        .pipe(gulp.dest(`${paths.dist}/${clientPath}/assets`));
+        .pipe(gulp.dest(`${paths.dist}/${clientPath}/assets/images`));
 });
 
 gulp.task('copy:extras', () => {
