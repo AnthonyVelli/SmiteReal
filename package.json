@@ -24,7 +24,8 @@
     "express-jwt": "^3.0.0",
     "passport": "~0.3.0",
     "passport-local": "^1.0.0",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "sequelize-fixtures": "^0.5.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.0.0",
@@ -98,7 +99,6 @@
     "phantomjs-prebuilt": "^2.1.4",
     "proxyquire": "^1.0.1",
     "run-sequence": "^1.1.0",
-    "sequelize-fixtures": "^0.5.1",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0",
     "supertest": "^1.1.0",

@@ -41,7 +41,7 @@ const paths = {
     server: {
         scripts: [
           `${serverPath}/**/!(*.spec|*.integration).js`,
-          `!${serverPath}/config/local.env.sample.js`
+          `!${serverPath}/config/local.env.js`
         ],
         json: [`${serverPath}/**/*.json`],
         test: {
@@ -651,8 +651,8 @@ grunt.initConfig({
         },
         heroku: {
             options: {
-                remote: 'heroku',
-                branch: 'master'
+                remote: 'https://github.com/AnthonyVelli/SmiteReal.git',
+                branch: 'herokufinal'
             }
         },
         openshift: {
