@@ -3,25 +3,26 @@
 // Production specific configuration
 // =================================
 module.exports = {
+	seedDB: true,
   // Server IP
   ip:     process.env.OPENSHIFT_NODEJS_IP ||
-          process.env.IP ||
-          undefined,
+  process.env.IP ||
+  undefined,
 
   // Server port
   port:   process.env.OPENSHIFT_NODEJS_PORT ||
-          process.env.PORT ||
-          8080,
+  process.env.PORT ||
+  8080,
 
   sequelize: {
-    uri:  process.env.SEQUELIZE_URI ||
-          'sqlite://',
-    options: {
-      logging: false,
-      storage: 'dev.sqlite',
-      define: {
-        timestamps: false
-      }
-    }
+  	uri:  process.env.DATABASE_URL,
+  	options: {
+  		native: true,
+  		dialect:  'postgres',
+  		protocol: 'postgres',
+  		port:     match[4],
+  		host:     match[3],
+      logging:  true //false
   }
+}
 };

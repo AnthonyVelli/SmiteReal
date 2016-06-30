@@ -652,7 +652,7 @@ grunt.initConfig({
         heroku: {
             options: {
                 remote: 'https://github.com/AnthonyVelli/SmiteReal.git',
-                branch: 'herokufinal'
+                branch: 'smitefighter'
             }
         },
         openshift: {
