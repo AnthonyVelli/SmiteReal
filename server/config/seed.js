@@ -13,6 +13,10 @@ var _sqldb = require('../sqldb');
 
 var _sqldb2 = _interopRequireDefault(_sqldb);
 
+var _environment = require('./environment');
+
+var _environment2 = _interopRequireDefault(_environment);
+
 var _sequelizeFixtures = require('sequelize-fixtures');
 
 var _sequelizeFixtures2 = _interopRequireDefault(_sequelizeFixtures);
@@ -25,7 +29,7 @@ var Item = _sqldb2.default.Item;
 var Level = _sqldb2.default.Level;
 var Ability = _sqldb2.default.Ability;
 var Component = _sqldb2.default.Component;
-var seedLocation = process.env.seedLocation || './seedData';
+var seedLocation = _environment2.default.seedLocation || './seedData';
 
 function roundToDecimal(val, places) {
 	return +(Math.round(val + 'e+' + places) + 'e-' + places);
