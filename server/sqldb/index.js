@@ -16,8 +16,13 @@ var _sequelize = require('sequelize');
 
 var _sequelize2 = _interopRequireDefault(_sequelize);
 
+var _pg = require('pg');
+
+var _pg2 = _interopRequireDefault(_pg);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+delete _pg2.default.native;
 var db = {
   Sequelize: _sequelize2.default,
   sequelize: new _sequelize2.default(_environment2.default.sequelize.uri, _environment2.default.sequelize.options)

@@ -16,8 +16,7 @@ module.exports = {
     options: {
       native: true,
       dialect: 'postgres',
-      protocol: 'postgres',
-      logging: true //false
+      protocol: 'postgres'
     }
   }
 };
