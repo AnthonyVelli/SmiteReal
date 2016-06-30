@@ -27,10 +27,6 @@ var all = {
   // Should we populate the DB with sample data?
   seedDB: true,
 
-  // Secret for session, you will want to change this and make it an environment variable
-  secrets: {
-    session: 'smite-secret'
-  }
 };
 
 // Export the config object based on the NODE_ENV
