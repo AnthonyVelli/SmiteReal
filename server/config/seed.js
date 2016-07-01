@@ -5,6 +5,7 @@
 
  'use strict';
  import sqldb from '../sqldb';
+ import config from './environment';
  import sequelize_fixtures from 'sequelize-fixtures';
  var God = sqldb.God;
  var User = sqldb.User;
@@ -12,18 +13,23 @@
  var Level = sqldb.Level;
  var Ability = sqldb.Ability;
  var Component = sqldb.Component;
-
+var seedLocation = config.seedLocation || './seedData';
 
 
 function roundToDecimal (val, places) {
-	return +(Math.round(val + 'e+' + places)  + 'e-' + places);
+	var splitNum = val.toString().split('.');
+	if (!splitNum[1]) {
+		splitNum[1] = '0';
+	} 
+	splitNum[1] = splitNum[1].slice(0,places);
+	return parseFloat(splitNum.join('.'));
 }
 function compoundGrowth (base, inc, times){
-	inc+=1;
+	inc = parseFloat(inc)+1;
 	for (var x = 1; x < times; x++){
 		base *= inc;
 	}
-	return roundToDecimal(base, 3);
+	return roundToDecimal(1/base, 3);
 }
 
 function GodFactory (god, level){
@@ -58,7 +64,7 @@ Level.sync({force: true})
 
 God.sync({force: true})
 .then(() => God.destroy({ where: {} }))
-.then(() => sequelize_fixtures.loadFile('./seedData/gods.json', {gods: God}))
+.then(() => sequelize_fixtures.loadFile(seedLocation+'/gods.json', {gods: God}))
 .then(done => {
 	console.log('Gods seeded')
 	return God.findAll(); })
@@ -68,7 +74,8 @@ God.sync({force: true})
 		for (var x = 1; x <=20; x++) {
 			allGodsAllLevels.push(new GodFactory(god, x));
 		}
-	})
+	}); 
+
 	return Level.bulkCreate(allGodsAllLevels); })
 .then(() => console.log('Levels Seeded'))
 .catch(err => console.error(err));
@@ -76,13 +83,13 @@ God.sync({force: true})
 
 Item.sync({force: true})
 .then(() => Item.destroy({ where: {} }))
-.then(() => sequelize_fixtures.loadFile('./seedData/itemsFinal.json', {items: Item}))
+.then(() => sequelize_fixtures.loadFile(seedLocation+'/itemsFinal.json', {items: Item}))
 .then(done => console.log('Items seeded'))
 .then(() => Ability.sync({force: true}))
 .then(() => Ability.destroy({ where: {} }))
 .then(() => Component.sync({force: true}))
 .then(() => Component.destroy({ where: {} }))
-.then(() => sequelize_fixtures.loadFile('./seedData/itemTable/itemPassiveTable.json', {ability: Ability, component: Component}))
+.then(() => sequelize_fixtures.loadFile(seedLocation+'/itemTable/itemPassiveTable.json', {ability: Ability, component: Component}))
 .then(() => Ability.findAll() )
 .then(abilities => {
 	var associateItemsPromise = abilities.map(ability => {

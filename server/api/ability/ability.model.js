@@ -12,9 +12,9 @@ export default function(sequelize, DataTypes) {
     name: DataTypes.STRING,
     owner: DataTypes.STRING,
     type: DataTypes.STRING,
-    description: DataTypes.STRING,
-    stacks: DataTypes.BOOLEAN,
+    description: DataTypes.TEXT,
+    stacks: DataTypes.STRING,
     maxStacks: DataTypes.INTEGER,
-    incomplete: DataTypes.BOOLEAN
+    incomplete: DataTypes.STRING
   });
 }

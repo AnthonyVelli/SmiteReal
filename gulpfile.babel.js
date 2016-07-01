@@ -495,6 +495,27 @@ gulp.task('build', cb => {
         cb);
 });
 
+gulp.task('buildPartial', cb => {
+    runSequence(
+        [
+            'clean:distPartial',
+            'clean:tmp'
+        ],
+        'inject',
+        'wiredep:client',
+        [
+            'copy:extras',
+            'copy:fonts',
+            'copy:assets',
+            'copy:server',
+            'transpile:server',
+        ],
+        cb);
+});
+
+gulp.task('clean:distPartial', () => {
+	console.log(`!${paths.dist}/${clientPath}/**/*`);
+	del([`${paths.dist}/!(.git*|.openshift|Procfile)**`, `!${paths.dist}/${paths.clientPath}/**/*`], {dot: true}); });
 gulp.task('clean:dist', () => del([`${paths.dist}/!(.git*|.openshift|Procfile)**`], {dot: true}));
 
 gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant', 'build:images'], () => {

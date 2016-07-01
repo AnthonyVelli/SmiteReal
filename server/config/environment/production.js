@@ -13,16 +13,16 @@ module.exports = {
   port:   process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.PORT ||
   8080,
+  seedLocation: './server/config/seedData',
 
   sequelize: {
   	uri:  process.env.DATABASE_URL,
   	options: {
-  		native: true,
   		dialect:  'postgres',
   		protocol: 'postgres',
-  		port:     match[4],
-  		host:     match[3],
-      logging:  true //false
+  		dialectOptions: {
+  			ssl: true
+  		}
   }
 }
 };

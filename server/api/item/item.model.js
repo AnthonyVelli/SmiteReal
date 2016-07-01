@@ -13,7 +13,7 @@ export default function(sequelize, DataTypes) {
     class: DataTypes.STRING,
     pros: {type: DataTypes.STRING, get: function() {return this.getDataValue('pros').split(',').map(prop => prop.trim())}},
     cost: DataTypes.INTEGER,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     startsFrom: DataTypes.STRING,
 	attack_msec: DataTypes.FLOAT,
 	cooldownreduction: DataTypes.FLOAT,
