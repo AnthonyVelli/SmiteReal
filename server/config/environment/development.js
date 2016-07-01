@@ -7,18 +7,15 @@ module.exports = {
 
   // Sequelize connection opions
   sequelize: {
-    uri: 'sqlite://',
+    uri: 'postgres://user1:user1@localhost/smite',
     options: {
-      logging: false,
-      storage: 'dev.sqlite',
-      define: {
-        timestamps: false
-      }
+      dialect: 'postgres',
+      port: 5432
     }
   },
 
   // Seed database on startup
-  seedDB: false
+  seedDB: true
 
 };
 //# sourceMappingURL=development.js.map

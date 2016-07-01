@@ -21,7 +21,7 @@ exports.default = function (sequelize, DataTypes) {
         });
       } },
     cost: DataTypes.INTEGER,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     startsFrom: DataTypes.STRING,
     attack_msec: DataTypes.FLOAT,
     cooldownreduction: DataTypes.FLOAT,

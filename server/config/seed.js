@@ -32,14 +32,19 @@ var Component = _sqldb2.default.Component;
 var seedLocation = _environment2.default.seedLocation || './seedData';
 
 function roundToDecimal(val, places) {
-	return +(Math.round(val + 'e+' + places) + 'e-' + places);
+	var splitNum = val.toString().split('.');
+	if (!splitNum[1]) {
+		splitNum[1] = '0';
+	}
+	splitNum[1] = splitNum[1].slice(0, places);
+	return parseFloat(splitNum.join('.'));
 }
 function compoundGrowth(base, inc, times) {
-	inc += 1;
+	inc = parseFloat(inc) + 1;
 	for (var x = 1; x < times; x++) {
 		base *= inc;
 	}
-	return roundToDecimal(base, 3);
+	return roundToDecimal(1 / base, 3);
 }
 
 function GodFactory(god, level) {
@@ -84,6 +89,7 @@ God.sync({ force: true }).then(function () {
 			allGodsAllLevels.push(new GodFactory(god, x));
 		}
 	});
+
 	return Level.bulkCreate(allGodsAllLevels);
 }).then(function () {
 	return console.log('Levels Seeded');
