@@ -14,10 +14,8 @@ angular.module('smiteApp')
 		},
 
 		toFloat: function(a, b) {
-			console.log(a, b);
 			a = this.toFloatOne(a);
 			b = this.toFloatOne(b);
-			console.log(a, b);
 			return [a,b];
 		},
 		convertOperators: function(operatorString){

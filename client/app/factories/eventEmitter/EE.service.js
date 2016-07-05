@@ -64,7 +64,6 @@ angular.module('smiteApp')
 		}
 
 		Emit(eName, arg){
-			console.log(this);
 			this.events[eName].forEach(func => func(arg));
 		}
 
@@ -79,13 +78,7 @@ angular.module('smiteApp')
 		CancelAllIntervals(){
 			this.intervals.forEach(interval => interval.cancelInterval());
 		}
-		// UnbindEvents(){
-		// 	for (var x in this.events){
-		// 		this.events[x].forEach(event => {
 
-		// 		});
-		// 	}
-		// }
 
 		AddInterval(emitName, func, interval){
 			let intervalInst = new IntervalObj(emitName, func, interval, this);
@@ -118,9 +111,7 @@ angular.module('smiteApp')
 		},
 		setEE: function(){
 			EEObj.CancelAllIntervals();
-			// EEObj.UnbindEvents();
 			EEObj = new EE();
-			console.log(EEObj);
 			return EEObj;
 		}
 	};

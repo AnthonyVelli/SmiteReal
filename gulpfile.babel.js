@@ -514,8 +514,8 @@ gulp.task('buildPartial', cb => {
 });
 
 gulp.task('clean:distPartial', () => {
-	console.log(`!${paths.dist}/${clientPath}/**/*`);
-	del([`${paths.dist}/!(.git*|.openshift|Procfile)**`, `!${paths.dist}/${paths.clientPath}/**/*`], {dot: true}); });
+	console.log(`!${paths.dist}/${paths.client.assets}`);
+	del([`${paths.dist}/!(.git*|.openshift|Procfile)**`, `!${paths.dist}`, `!${paths.dist}/client`], {dot: true}); });
 gulp.task('clean:dist', () => del([`${paths.dist}/!(.git*|.openshift|Procfile)**`], {dot: true}));
 
 gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant', 'build:images'], () => {

@@ -35,17 +35,13 @@
 		}
 
 		removeGod($index) {
-			console.log(this.chosen[0].ReturnItems());
 			this.items.push(...this.chosen[0].ReturnItems());
 			this.onDelete({id: $index});
 		}
 		equip(god, itemClicked) {
 
 			var itemIDXToSplice = this.items.findIndex(item => item._id === itemClicked._id);
-			console.log(this.items[itemIDXToSplice] === itemClicked);
-			console.log(itemClicked);
 			if (itemClicked.Ability && itemClicked.Ability.stacks==='KILL' && !itemClicked.Ability.stackCount) {
-				console.log('missing stackcount');
 			} else {
 				god.Equip(this.items.splice(itemIDXToSplice, 1)[0]);
 			}

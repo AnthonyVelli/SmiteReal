@@ -33,7 +33,6 @@ angular.module('smiteApp')
 				}
 			}
 			this.amount = HF.roundToDecimal(recurseChain(effectChain[effectChain.effect.amount]), 2);
-			console.log(this.amount);
 		}
 	}
 
@@ -55,10 +54,8 @@ angular.module('smiteApp')
 
 
 		addEffect(effect) {
-			console.log(effect.effect);
 			var effectInstance = new Effect(this.name, effect, this.owner);
 			this.activeEffects.push(effectInstance);
-			console.log(effectInstance);
 			this.owner.RegisterEffect(effectInstance);
 		}
 
@@ -85,7 +82,6 @@ angular.module('smiteApp')
 						this.addEffect(effect);
 					} else {
 						var boundEffect = this.emitEffect(effect);
-						console.log(EE);
 						EE.Emit('attack'+this.owner.attackingSide, boundEffect);
 					}
 				});
@@ -118,7 +114,6 @@ angular.module('smiteApp')
 		//checks to see if ability should be activated
 		checkAbility(event){
 			if (!this.active && this.trigger(event)) {
-			console.log(this);
 				this.ability();
 			}
 		}
@@ -193,7 +188,6 @@ angular.module('smiteApp')
 
 		//auto attack function.  added to abilities array & sent as argument in emit function at attack_msec interval
 		BasicAttack(){
-			console.log('running basic attack');
 			this.active = true;
 			var eeFunction = function(defender){
 				defender.RunAbilities('attack');
@@ -208,9 +202,7 @@ angular.module('smiteApp')
 
 		//function run when destroyEffect is emitted.  received effect to be destroyed & pulls from gods activeEffects array.
 		DestroyEffect(Effect){
-			console.log(this.activeEffects);
 			this.activeEffects.splice(this.activeEffects.findIndex(eff => eff === Effect), 1);
-			console.log(this.activeEffects);
 		}
 
 		//function run when this god's side is attacked.  argument received should be a function.  god being attacked is passed into received function.
@@ -262,13 +254,10 @@ angular.module('smiteApp')
 				var oldModifier = effect.amount;
 				var godWOMod = new Object(this);
 				godWOMod[effect.stat] -= effect.amount;
-				console.log(godWOMod);
 				effect.parseEffectChain(godWOMod);
 				if (effect.amount !== oldModifier){
 					effect.amount -= oldModifier;
 					this[effect.stat] = HF.convertOperators(effect.operator)(this[effect.stat], effect.amount);
-					console.log('effect updated');
-					console.log(this[effect.stat]);
 				}
 			});
 		}
@@ -276,7 +265,6 @@ angular.module('smiteApp')
 		//checks to see if any dormant abilities should be activated.  Run at the beginning of a fight, and when this god is attacked.  
 		RunAbilities(event){
 			this.abilities.forEach(ability => {
-				console.log(ability);
 				ability.checkAbility(event);
 			});
 			this.SetDamage();
@@ -305,9 +293,6 @@ angular.module('smiteApp')
 
 			let newAbility = new Ability(abilObj);
 			this.abilities.push(newAbility);
-			console.log('checking abil');
-			console.log(abilObj.effectObj);
-			console.log(abilObj.trigger);
 			newAbility.checkAbility();
 			this.SetDamage();
 		}

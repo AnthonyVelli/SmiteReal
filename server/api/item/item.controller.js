@@ -56,11 +56,10 @@ function handleEntityNotFound(res) {
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
-  	console.log(err);
     res.status(statusCode).send(err);
   };
 }
-// {attributes: ['name', 'image', 'class', 'description', 'pros']}
+
 // Gets a list of Items
 export function index(req, res) {
   return Item.findAll({

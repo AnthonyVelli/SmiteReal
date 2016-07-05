@@ -18,7 +18,6 @@ angular.module('smiteApp')
         .catch(error);
       },
       getOne: function (id) {
-      	console.log(id);
         return $http.get('/api/levels/'+id)
         .then(gods => gods.data)
         .catch(error);

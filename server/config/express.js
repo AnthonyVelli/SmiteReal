@@ -18,8 +18,9 @@ import config from './environment';
 import passport from 'passport';
 import session from 'express-session';
 import sqldb from '../sqldb';
-import expressSequelizeSession from 'express-sequelize-session';
-var Store = expressSequelizeSession(session.Store);
+import pg from 'pg';
+import pgSimple from 'connect-pg-simple'
+const pgSession = pgSimple(session);
 
 export default function(app) {
   var env = app.get('env');
@@ -49,11 +50,15 @@ export default function(app) {
   // Persist sessions with MongoStore / sequelizeStore
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
+
   app.use(session({
     secret: config.secrets.session,
     saveUninitialized: true,
-    resave: false,
-    store: new Store(sqldb.sequelize)
+    resave: true,
+  	store: new pgSession({
+  		pg: pg,
+  		conString: config.sequelize.uri
+  	})
   }));
 
   /**

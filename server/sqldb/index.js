@@ -6,8 +6,8 @@
 import path from 'path';
 import config from '../config/environment';
 import Sequelize from 'sequelize';
-import pg from 'pg';
-delete pg.native;
+// import pg from 'pg';
+// delete pg.native;
 var db = {
   Sequelize,
   sequelize: new Sequelize(config.sequelize.uri, config.sequelize.options)
