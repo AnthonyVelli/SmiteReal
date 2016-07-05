@@ -36,11 +36,15 @@ exports.default = function (app) {
   // Persist sessions with MongoStore / sequelizeStore
   // We need to enable sessions for passport-twitter because it's an
   // oauth 1.0 strategy, and Lusca depends on sessions
+
   app.use((0, _expressSession2.default)({
     secret: _environment2.default.secrets.session,
     saveUninitialized: true,
-    resave: false,
-    store: new Store(_sqldb2.default.sequelize)
+    resave: true,
+    store: new pgSession({
+      pg: _pg2.default,
+      conString: _environment2.default.sequelize.uri
+    })
   }));
 
   /**
@@ -129,11 +133,15 @@ var _sqldb = require('../sqldb');
 
 var _sqldb2 = _interopRequireDefault(_sqldb);
 
-var _expressSequelizeSession = require('express-sequelize-session');
+var _pg = require('pg');
 
-var _expressSequelizeSession2 = _interopRequireDefault(_expressSequelizeSession);
+var _pg2 = _interopRequireDefault(_pg);
+
+var _connectPgSimple = require('connect-pg-simple');
+
+var _connectPgSimple2 = _interopRequireDefault(_connectPgSimple);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Store = (0, _expressSequelizeSession2.default)(_expressSession2.default.Store);
+var pgSession = (0, _connectPgSimple2.default)(_expressSession2.default);
 //# sourceMappingURL=express.js.map

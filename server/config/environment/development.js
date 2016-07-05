@@ -10,12 +10,14 @@ module.exports = {
     uri: 'postgres://user1:user1@localhost/smite',
     options: {
       dialect: 'postgres',
-      port: 5432
+      protocol: 'postgres',
+      port: 5432,
+      logging: false
     }
   },
 
   // Seed database on startup
-  seedDB: true
+  seedDB: false
 
 };
 //# sourceMappingURL=development.js.map
