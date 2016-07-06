@@ -23,7 +23,10 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 
 ## Build & development
 
-Run `grunt build` for building and `grunt serve` for preview.
+Run `gulp build` for building and `gulp serve` for preview.
+
+Run `gulp buildcontrol:heroku` to push the dist folder to the git repo linked with heroku.
+You still need to create a sessions table manually in the heroku PG.  This can be done using the command `heroku pg:psql -a smite < node_modules/connect-pg-simple/table.sql`.  This should probably be a post in install script in package.json.
 
 ## Testing
 
