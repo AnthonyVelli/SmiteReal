@@ -10,7 +10,7 @@ module.exports = {
 
   // Server port
   port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080,
-  seedLocation: './server/config/seedData',
+  seedLocation: './server/seedData',
 
   sequelize: {
     uri: process.env.DATABASE_URL,
