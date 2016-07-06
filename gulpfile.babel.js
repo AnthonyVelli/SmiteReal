@@ -261,7 +261,7 @@ gulp.task('transpile:client', () => {
 });
 
 gulp.task('transpile:server', () => {
-    return gulp.src(_.union(paths.server.scripts, paths.server.json))
+    return gulp.src(paths.server.scripts)
         .pipe(transpileServer())
         .pipe(gulp.dest(`${paths.dist}/${serverPath}`));
 });
@@ -484,13 +484,14 @@ gulp.task('build', cb => {
         'inject',
         'wiredep:client',
         [
-            'build:images',
             'copy:extras',
+            'copy:seed',
             'copy:fonts',
             'copy:assets',
             'copy:server',
             'transpile:server',
-            'build:client'
+            'build:client',
+            'build:images',
         ],
         cb);
 });
@@ -505,20 +506,20 @@ gulp.task('buildPartial', cb => {
         'wiredep:client',
         [
             'copy:extras',
+            'copy:seed',
             'copy:fonts',
             'copy:assets',
             'copy:server',
             'transpile:server',
+            'build:client'
         ],
         cb);
 });
 
-gulp.task('clean:distPartial', () => {
-	console.log(`!${paths.dist}/${paths.client.assets}`);
-	del([`${paths.dist}/!(.git*|.openshift|Procfile)**`, `!${paths.dist}`, `!${paths.dist}/client`], {dot: true}); });
+gulp.task('clean:distPartial', () => del([`${paths.dist}/!(.git*|.openshift|Procfile)**`, `${paths.dist}/client/**`, `!${paths.dist}/client`, `!${paths.dist}/client/{assets, assets/**}`], {dot: true}));
 gulp.task('clean:dist', () => del([`${paths.dist}/!(.git*|.openshift|Procfile)**`], {dot: true}));
 
-gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant', 'build:images'], () => {
+gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], () => {
     var manifest = gulp.src(`${paths.dist}/${clientPath}/assets/rev-manifest.json`);
 
     var appFilter = plugins.filter('**/app.js', {restore: true});
@@ -598,6 +599,14 @@ gulp.task('copy:fonts', () => {
 gulp.task('copy:assets', () => {
     return gulp.src([paths.client.assets, '!' + paths.client.images])
         .pipe(gulp.dest(`${paths.dist}/${clientPath}/assets`));
+});
+
+gulp.task('copy:seed', () => {
+    return gulp.src(paths.server.json)
+    	.pipe(plugins.rename({
+      		dirname: ''
+    	}))
+    	.pipe(gulp.dest(`${paths.dist}/${serverPath}/seedData`));
 });
 
 gulp.task('copy:server', () => {
