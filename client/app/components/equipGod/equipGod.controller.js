@@ -39,8 +39,10 @@
 			this.onDelete({id: $index});
 		}
 		equip(god, itemClicked) {
-
+			console.log(god);
+			console.log(itemClicked);
 			var itemIDXToSplice = this.items.findIndex(item => item._id === itemClicked._id);
+			console.log(itemIDXToSplice);
 			if (itemClicked.Ability && itemClicked.Ability.stacks==='KILL' && !itemClicked.Ability.stackCount) {
 			} else {
 				god.Equip(this.items.splice(itemIDXToSplice, 1)[0]);

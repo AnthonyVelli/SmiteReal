@@ -6,6 +6,12 @@
 	max-height: 30vh;
 }
 
+.item-header {
+	overflow-wrap: break-word;
+	overflow: visible !important;
+	white-space: normal !important;
+}
+
 .item-image {
 	content: "";
     position: absolute;
@@ -24,6 +30,7 @@
 .item-description {
 	position: relative;
     z-index: 1;
+    width: 100%;
 }
 
 .item-property {

@@ -4,12 +4,11 @@
 		constructor (){
 		}
     	sort (element) {
-    		var targetEle = element.target.parentElement;
-    		if (targetEle.nodeName !== 'BUTTON'){
+    		var targetEle = element.target.nodeName === 'BUTTON' ? element.target: element.target.parentElement;
+			var target = element.target.dataset.stat || element.target.parentElement.getAttribute('data-stat');
+    		if (!target){
     			return;
     		}
-
-    		var target = targetEle.getAttribute('data-stat');
     		this.onUpdate({target: target});
     		$(targetEle).toggleClass('active-fltr');
     		$(targetEle).toggleClass('md-raised');

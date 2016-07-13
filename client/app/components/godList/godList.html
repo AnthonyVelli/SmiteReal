@@ -1,14 +1,14 @@
-<god-filter flex='25' layout='column' layout-padding 
+<god-filter layout='column' layout-padding 
 	search='$ctrl.search' 
 	on-delete='$ctrl.disableFilter(filterType)' 
 	on-update='$ctrl.filter(element, filterType)'>
 </god-filter>
-<div class='scroll-hold' id='god-list-{{$ctrl.side}}' flex='75' layout='column'>
+<div class='scroll-hold' id='god-list-{{$ctrl.side}}' layout='column'>
 	<div 
 	infinite-scroll='$ctrl.onScroll()' 
 	infinite-scroll-distance='1'
 	infinite-scroll-container='$ctrl.scrollContainer'>
-		<div ng-repeat="god in $ctrl.gods | orderBy: $ctrl.search.order:$ctrl.search.reverse | filter: {name: $ctrl.search.text, class: $ctrl.search.filter}  | limitTo: $ctrl.loadedGods"> 
+		<div layout='column' ng-repeat="god in $ctrl.gods | orderBy: $ctrl.search.order:$ctrl.search.reverse | filter: {name: $ctrl.search.text, class: $ctrl.search.filter}  | limitTo: $ctrl.loadedGods"> 
 			<md-card md-ink-ripple class="md-button" ng-click="$ctrl.chooseGod(god)">
 				<md-card-title class='no-side-padding'>
 					<md-card-title-text>

@@ -1,19 +1,27 @@
 $hovercolor: rgba(158,158,158,0.2);
 
 .fltr-btn {
-	margin-left: 0;
-	margin-right: 0;
-	padding: 2% 2%;
+	line-height: 100%;
+	margin: 1%;
+	padding: 2%;
 	min-width: 0;
 	min-height: 0;
 	max-height: 100%;
-	line-height: 10%;
 	:hover {
 		background-color: $hovercolor;
 	}
 }
 .active-fltr {
 	background-color: darken($hovercolor, 60%);
+}
+
+item-filter {
+	min-height: 150px;
+	margin: 5% 0%;
+}
+
+god-filter {
+	min-height: 150px;
 }
 
 .filtr-header {

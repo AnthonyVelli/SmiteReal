@@ -22,15 +22,15 @@
       <!-- endinjector -->
     <!-- endbuild -->
   </head>
-  <body ng-app="smiteApp" layout='column' layout-align='space-between'>
+  <body ng-app="smiteApp" layout='column'>
     <!--[if lt IE 7]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <navbar></navbar>
-    <div ui-view="" flex></div>
-    <footer></footer>
+    <navbar layout='row' layout-align='center center'></navbar>
+    <div layout='column' ui-view="" flex></div>
+    <footer layout='row' layout-align='center center' flex='10'></footer>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
