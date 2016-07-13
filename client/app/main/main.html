@@ -1,9 +1,11 @@
-<div class='fight-btn' layout=row layout-align='center center' ng-show='chosenGods.left.length > 0 && chosenGods.right.length > 0'>
+<div flex='10'>
+	<div class='fight-btn' layout=row layout-align='center center' ng-show='chosenGods.left.length > 0 && chosenGods.right.length > 0'>
 		<md-button class="md-accent md-raised md-hue-5" ng-click='startFight()'>{{fightButtonText}}</md-button>
 		<md-button class="md-primary md-raised md-hue-1" ng-show='pauseButtonText' ng-click='pauseFight()'>{{pauseButtonText}}</md-button>
+	</div>
 </div>
-<section layout="row" flex>
+<section flex='70' layout="row">
 	<side flex='50' layout='column' layout-fill gods="gods" chosen-gods="chosenGods.left" on-create="createFighter(god, side)" side="left"></side>
 	<side flex='50' layout='column' layout-fill gods="gods" chosen-gods="chosenGods.right" on-create="createFighter(god, side)" side="right"></side>
 </section>
-<timeline events='Events'></timeline>
+<timeline ng-hide='firefox' flex='20' events='Events'></timeline>

@@ -1,7 +1,9 @@
 
 .fight-timeline {
 	overflow-y: scroll;
-	z-index: 9000;
-	position: absolute;
 	width: 100vw;
+}
+
+.timeline-entry {
+	min-width: 200px;
 }

@@ -1,5 +1,6 @@
 <div ng-repeat='god in $ctrl.chosen' layout-fill layout='column'>
-	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36' flex='10'></canvas>
+	<p flex-offset='5' class='hp-bar'>{{god.healthremaining | number : 0}}hp</p>
+	<canvas class='health-bar' id='canvas-{{god.name}}-{{god.side}}' height='36'></canvas>
 	<div layout='row' class='god-card'>
 		<md-card flex='70' ng-disabled='god.fighting' layout="row" layout-sm="column" layout-xs="column" layout-align='space-between'>
 			<div layout='column' flex-gt-sm='35' flex='100' flex-offset='5'>
@@ -57,7 +58,7 @@
 						</tbody>
 					</table>
 				</div>
-				<md-button ng-show='!god.fighting' class="md-raised md-primary" ng-click="$ctrl.removeGod($index); $event.stopPropagation();">Choose New God</md-button>	
+				<md-button ng-disabled='god.fighting' class="md-raised md-primary" ng-click="$ctrl.removeGod($index); $event.stopPropagation();">Choose New God</md-button>	
 			</div>
 			<md-list flex-gt-sm='35' flex='100'>
 				<md-list-item ng-disabled='god.fighting || !item._id' ng-click='$ctrl.deequip(god, $index)' ng-repeat='item in god.equipment'>
@@ -69,7 +70,7 @@
 			</md-list>
 		</md-card>
 		<div flex='30' layout-fill layout='column' layout-align='center center'>
-			<item-filter layout='column' layout-align='center center'
+			<item-filter layout='column' layout-padding
 			search='$ctrl.search'
 			on-delete='$ctrl.removeFilters()'
 			on-update='$ctrl.sort(target)'>

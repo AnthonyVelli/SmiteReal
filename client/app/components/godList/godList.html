@@ -9,7 +9,7 @@
 	infinite-scroll-distance='1'
 	infinite-scroll-container='$ctrl.scrollContainer'>
 		<div layout='column' ng-repeat="god in $ctrl.gods | orderBy: $ctrl.search.order:$ctrl.search.reverse | filter: {name: $ctrl.search.text, class: $ctrl.search.filter}  | limitTo: $ctrl.loadedGods"> 
-			<md-card md-ink-ripple class="md-button" ng-click="$ctrl.chooseGod(god)">
+			<md-card md-ink-ripple class="md-button" ng-click="$ctrl.chooseGod(god); $event.preventDefault();" >
 				<md-card-title class='no-side-padding'>
 					<md-card-title-text>
 						<span class="md-headline">{{god.name}}</span>

@@ -1,7 +1,7 @@
 <div layout='row' flex='20' layout-align='center center'>
-	<input class='filtr-input' ng-model="$ctrl.search.text" placeholder='Item'></label>
+	<input class='filtr-input' ng-model="$ctrl.search.text" placeholder='Item'></input>
 </div>
-<div  hide-xs hide-sm flex layout='row' layout-align='center center' layout-wrap ng-click='$ctrl.sort($event)'>
+<div layout='row' hide-xs hide-sm flex layout-align='center center' layout-wrap ng-click='$ctrl.sort($event)'>
 	<md-button data-stat='attack_msec' class='fltr-btn md-raised'>ATK/s</md-button>	
 	<md-button data-stat='health' class='fltr-btn md-raised'>HP</md-button>	
 	<md-button data-stat='mana' class='fltr-btn md-raised'>MP</md-button>	
@@ -12,7 +12,7 @@
 	<md-button data-stat='physicalpenetration' class='fltr-btn md-raised'>PEN PHYS</md-button>	
 	<md-button data-stat='magicalpenetration' class='fltr-btn md-raised'>PEN MAG</md-button>	
 </div>
-<div  layout='row' layout-align='center center'>
+<div layout='row' layout-align='center center' layout-padding>
 	<md-button class='fltr-btn md-raised' ng-click='$ctrl.clearSort()'>Clear</md-button>	
 </div>
 

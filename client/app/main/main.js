@@ -16,6 +16,8 @@ angular.module('smiteApp')
 			$scope.chosenGods.right = [];
 			$scope.fightButtonText = 'Fight!';
 			$scope.pauseButtonText = null;
+			$scope.firefox = /Firefox/.test(navigator.userAgent);
+			console.log($scope.firefox);
 
 			$scope.gods = gods;
 			$scope.createFighter = (god, side) => {

@@ -1,8 +1,20 @@
-<div scroll-glue-right="true" class='fight-timeline' layout=row layout-align='start center'>
-		<div ng-repeat='event in $ctrl.events' layout='column' layout-margin>
-			<p>{{event.sinceFightStart | number:2}} seconds</p>
-			<p>{{event.name}}</p>
-			<p>{{event.attack}}</p>
-			<p>{{event.amount | number:2}}</p>
+<div scroll-glue-right="true" class='fight-timeline' layout=row layout-padding layout-align='start center'>
+		<div class='timeline-entry' ng-repeat='event in $ctrl.events' layout='column'>
+			<table class='table'>
+				<tbody>
+					<tr>
+						<th>Seconds</th>
+						<th>{{event.sinceFightStart | number:2}}</th>
+					</tr>
+					<tr>
+						<th>Attacked</th>
+						<th>{{event.name}}</th>
+					</tr>
+					<tr>
+						<th>Damage</th>
+						<th>{{event.amount * -1 | number:0}}</th>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 </div>
